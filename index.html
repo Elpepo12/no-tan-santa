@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No Tan Santa | Pinsas & Cócteles</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Montserrat:wght@400;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="speakeasy-modal" class="hidden-modal">
+        <div class="speakeasy-content">
+            <h2 class="glitch" data-text="EL PURGATORIO">EL PURGATORIO</h2>
+            <p class="secret-text">Has encontrado la entrada oculta.</p>
+            <div class="secret-menu">
+                <h3>CÓCTEL SECRETO: <span class="neon-text red">LA IRA DEL BARMAN</span></h3>
+                <p>Mezcal artesanal, licor de chile ancho, sirope de agave oscuro y humo de canela.</p>
+                <p class="password">Contraseña para pedirlo: <em>"Vengo a confesarme"</em></p>
+            </div>
+            <button id="close-speakeasy" class="btn-neon">Volver a la luz</button>
+        </div>
+    </div>
+
+    <div class="ambient-glow glow-blue"></div>
+    <div class="ambient-glow glow-red"></div>
+
+    <header id="navbar">
+        <div class="logo-container">
+            <img src="icon.jpg" alt="No Tan Santa Logo" class="logo-img" id="secret-logo" title="¿Qué pasa si me tocas 3 veces?">
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="#galeria">La Vibra</a></li>
+                <li><a href="#menu">El Menú</a></li>
+                <li><a href="#contacto">Dónde Estamos</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="diagonal-cut">
+            <div class="hero-content reveal">
+                <h1 class="neon-text blue float-anim">Bienvenidos al Pecado</h1>
+                <p class="hero-subtitle">Pinsas crujientes, cócteles de autor y noches inolvidables.</p>
+                <a href="#menu" class="btn-neon pulse-anim">Pecar Ahora</a>
+            </div>
+        </section>
+
+        <section id="selector-pecados" class="section-padding dark-bg text-center reveal">
+            <h2 class="neon-text red">¿DE QUÉ PECAS HOY?</h2>
+            <p class="selector-desc">Elige tu vibra y te diremos tu condena exacta.</p>
+            
+            <div class="vibes-container">
+                <button class="vibe-btn" data-vibe="atrevido">Me siento Atrevido</button>
+                <button class="vibe-btn" data-vibe="dulce">Quiero algo Dulce</button>
+                <button class="vibe-btn" data-vibe="hambre">Dámelo TODO</button>
+            </div>
+
+            <div id="combo-result" class="combo-box hidden-combo">
+                <h3 class="neon-text blue">TU PECADO IDEAL ES:</h3>
+                <p id="combo-text"></p>
+            </div>
+        </section>
+
+        <section id="galeria" class="section-padding diagonal-cut-reverse">
+            <h2 class="neon-text red text-center reveal">LA VIBRA</h2>
+            <div class="grid-gallery staggered">
+                <div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80" alt="Cócteles"></div>
+                <div class="gallery-item reveal mt-offset"><img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=80" alt="Pinsa"></div>
+                <div class="gallery-item reveal"><img src="https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=600&q=80" alt="Neón"></div>
+            </div>
+        </section>
+
+        <section id="menu" class="section-padding dark-bg diagonal-cut">
+            <h2 class="neon-text blue text-center reveal">LOS PECADOS CAPITALES</h2>
+            <div class="menu-container">
+                <div class="menu-category reveal">
+                    <h3><span class="neon-text red">PINSAS</span> ROMANAS</h3>
+                    <div class="menu-cards">
+                        <div class="menu-card">
+                            <div class="menu-info">
+                                <h4>La Lujuria</h4>
+                                <p>Salsa de tomate San Marzano, burrata fresca, mortadela trufada y pistachos.</p>
+                            </div>
+                            <span class="price">14€</span>
+                        </div>
+                        <div class="menu-card">
+                            <div class="menu-info">
+                                <h4>La Avaricia</h4>
+                                <p>Doble mozzarella, gorgonzola, pera caramelizada y nueces.</p>
+                            </div>
+                            <span class="price">13€</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-category reveal">
+                    <h3><span class="neon-text blue">CÓCTELES</span> DE AUTOR</h3>
+                    <div class="menu-cards">
+                        <div class="menu-card">
+                            <div class="menu-info">
+                                <h4>Beso de Judas</h4>
+                                <p>Ginebra, sirope de frutos rojos, zumo de lima y espuma de jengibre.</p>
+                            </div>
+                            <span class="price">10€</span>
+                        </div>
+                        <div class="menu-card">
+                            <div class="menu-info">
+                                <h4>El Limbo</h4>
+                                <p>Ron añejo, maracuyá, toque de chile y ahumado con romero.</p>
+                            </div>
+                            <span class="price">11€</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="confesionario" class="section-padding text-center diagonal-cut-reverse">
+            <h2 class="neon-text red reveal">EL CONFESIONARIO</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Lo que pasa en No Tan Santa, se cuenta en susurros...</p>
+            <div class="whisper-container"></div>
+        </section>
+    </main>
+
+    <footer id="contacto">
+        <div class="footer-content reveal">
+            <img src="icon.jpg" alt="No Tan Santa" class="footer-logo">
+            <p>Calle Falsa 123, Ciudad del Pecado</p>
+            <p>Abierto de Miércoles a Domingo | 19:00 - 02:30</p>
+            <p class="copyright">© 2026 No Tan Santa. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
