@@ -1,145 +1,290 @@
-/* --- Variables y Configuración Base --- */
+/* =========================================
+   VARIABLES Y CONFIGURACIÓN BASE
+   ========================================= */
 :root {
-    --bg-dark: #050810; 
-    --bg-darker: #020306;
-    --neon-blue: #00f3ff;
-    --neon-red: #ff2a40; 
-    --text-main: #f4f4f5;
-    --text-muted: #a1a1aa;
-    --font-title-neon: 'Kaushan Script', cursive; /* Nueva fuente de neón */
-    --font-heading: 'Montserrat', sans-serif;
-    --font-body: 'Open Sans', sans-serif;
+    --bg-base: #050505; 
+    --bg-darker: #000000;
+    --text-light: #e0e0e0;
+    --text-gold: #c5a059; /* Dorado viejo Old Money */
+    --text-gold-light: #e8c886;
+    
+    /* Neones solo para las cajas y botones */
+    --neon-red: #ff1a40;
+    --neon-blue: #0066ff;
+    
+    /* Tipografía Old Money */
+    --font-heading: 'Playfair Display', serif;
+    --font-body: 'Montserrat', sans-serif;
+    
+    --transition: all 0.3s ease-in-out;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
 
-body { font-family: var(--font-body); background-color: var(--bg-dark); color: var(--text-main); line-height: 1.6; overflow-x: hidden; position: relative; }
+html { 
+    scroll-behavior: smooth; 
+    background-color: var(--bg-base); 
+    color: var(--text-light); 
+}
 
-/* --- Luces Ambientales Animadas --- */
-.ambient-glow { position: fixed; border-radius: 50%; filter: blur(150px); z-index: -1; opacity: 0.4; animation: drift 15s infinite alternate ease-in-out; }
-.glow-blue { top: 10%; left: -10%; width: 40vw; height: 40vw; background: var(--neon-blue); }
-.glow-red { bottom: -10%; right: -10%; width: 30vw; height: 30vw; background: var(--neon-red); animation-delay: -5s; }
-@keyframes drift { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(100px, 150px) scale(1.2); } }
+body { 
+    font-family: var(--font-body); 
+    overflow-x: hidden; 
+}
 
-/* --- Tipografía y Efectos Neón --- */
-h2, h3, h4 { font-family: var(--font-heading); text-transform: uppercase; }
-.text-center { text-align: center; }
+.container { 
+    width: 90%; 
+    max-width: 1200px; 
+    margin: 0 auto; 
+}
 
-.neon-text.blue { color: #fff; text-shadow: 0 0 10px rgba(0,243,255,0.5), 0 0 20px var(--neon-blue), 0 0 40px var(--neon-blue); }
-.neon-text.red { color: #fff; text-shadow: 0 0 10px rgba(255,42,64,0.5), 0 0 20px var(--neon-red), 0 0 40px var(--neon-red); }
+.hidden { display: none !important; }
+.mt-20 { margin-top: 20px; }
+.text-light { color: var(--text-light); }
+.bg-darker { 
+    background-color: var(--bg-darker); 
+    padding: 80px 0; 
+    border-top: 1px solid rgba(197, 160, 89, 0.2); 
+}
 
-/* --- Navegación --- */
-header { position: fixed; top: 0; width: 100%; background: transparent; transition: all 0.4s ease; display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; z-index: 1000; }
-header.scrolled { background: rgba(5, 8, 16, 0.85); backdrop-filter: blur(15px); padding: 0.8rem 5%; border-bottom: 1px solid rgba(0, 243, 255, 0.15); }
-
-.logo-img { height: 60px; width: auto; transition: transform 0.3s ease; cursor: pointer; }
-.logo-img:hover { transform: scale(1.05); filter: drop-shadow(0 0 5px var(--neon-red)); }
-
-.nav-links { list-style: none; display: flex; gap: 2rem; }
-.nav-links a { color: var(--text-main); text-decoration: none; font-weight: 600; position: relative; padding: 5px 0; transition: color 0.3s ease; }
-.nav-links a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0; background-color: var(--neon-blue); transition: width 0.3s ease; box-shadow: 0 0 8px var(--neon-blue); }
-.nav-links a:hover::after { width: 100%; }
-.nav-links a:hover { color: var(--neon-blue); }
-
-.hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
-.hamburger span { width: 25px; height: 3px; background-color: var(--text-main); transition: all 0.3s ease; border-radius: 5px;}
-
-/* --- Hero Section & Cortes Diagonales --- */
-#hero { height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; background: linear-gradient(rgba(5, 8, 16, 0.6), rgba(5, 8, 16, 0.9)), url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1920&q=80') center/cover; padding: 0 20px; }
-.diagonal-cut { clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); padding-bottom: 5vw; }
-.diagonal-cut-reverse { clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%); padding-top: 8vw; margin-top: -5vw; }
-
-/* NUEVOS ESTILOS DEL TÍTULO HERO */
-#hero h1 { 
-    font-family: var(--font-title-neon); 
-    font-size: clamp(2.2rem, 5vw, 4.5rem); /* Tamaño más pequeño y elegante */
-    margin-bottom: 1rem; 
+/* =========================================
+   TEXTOS OLD MONEY
+   ========================================= */
+.old-money-hero-title {
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    font-weight: 700;
+    color: var(--text-gold-light);
     letter-spacing: 2px;
-    text-transform: none; /* Permite mayúsculas y minúsculas */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    margin-bottom: 10px;
+    text-align: center;
 }
 
-.hero-subtitle { font-family: var(--font-heading); font-size: clamp(1.1rem, 2.5vw, 1.5rem); font-style: italic; color: rgba(255,255,255,0.9); margin-bottom: 2.5rem; letter-spacing: 1px; }
+.old-money-section-title {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    font-weight: 600;
+    color: var(--text-gold);
+    text-align: center;
+    letter-spacing: 1px;
+}
 
-.float-anim { animation: floatY 4s ease-in-out infinite; }
-@keyframes floatY { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-.pulse-anim { animation: pulse 2s infinite; }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(0, 243, 255, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 243, 255, 0); } }
+.divider-gold {
+    width: 60px;
+    height: 3px;
+    background-color: var(--text-gold);
+    margin: 15px auto 50px auto;
+}
 
-.btn-neon { display: inline-block; padding: 15px 35px; color: var(--bg-dark); background-color: var(--neon-blue); border-radius: 30px; text-decoration: none; font-weight: 900; font-family: var(--font-heading); letter-spacing: 2px; transition: all 0.3s ease; box-shadow: 0 0 15px var(--neon-blue); cursor: pointer; border: none; text-transform: uppercase;}
-.btn-neon:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 0 30px var(--neon-blue), 0 0 50px var(--neon-blue); background-color: #fff; }
+.gold-text-italic { 
+    color: var(--text-gold); 
+    font-family: var(--font-heading); 
+    font-size: 1.8rem; 
+    font-style: italic; 
+    text-align: center; 
+}
 
-/* --- Novedad 1: Selector de Pecados --- */
-.selector-desc { color: var(--text-muted); margin-bottom: 2rem; font-size: 1.1rem; }
-.vibes-container { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
-.vibe-btn { background: transparent; border: 2px solid var(--neon-red); color: #fff; padding: 12px 25px; border-radius: 25px; font-family: var(--font-heading); font-weight: 700; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase;}
-.vibe-btn:hover { background: var(--neon-red); box-shadow: 0 0 20px var(--neon-red); }
+.gold-title { 
+    color: var(--text-gold-light); 
+    font-family: var(--font-heading); 
+    font-size: 1.6rem; 
+    margin-bottom: 10px; 
+}
 
-.combo-box { background: rgba(0,0,0,0.5); border: 1px solid var(--neon-blue); border-radius: 15px; padding: 2rem; max-width: 600px; margin: 0 auto; transition: all 0.5s ease; opacity: 1; transform: scale(1); }
-.hidden-combo { opacity: 0; transform: scale(0.8); pointer-events: none; height: 0; padding: 0; border: none; margin: 0; overflow: hidden; }
-#combo-text { font-size: 1.2rem; font-weight: 600; margin-top: 1rem; }
+/* =========================================
+   BORDES DE NEÓN (Cajas de Vídeos)
+   ========================================= */
+.neon-box-red {
+    border: 1px solid var(--neon-red);
+    box-shadow: 0 0 10px rgba(255, 26, 64, 0.3), inset 0 0 5px rgba(255, 26, 64, 0.1);
+}
+.neon-box-red:hover { 
+    box-shadow: 0 0 20px var(--neon-red), inset 0 0 10px var(--neon-red); 
+    transform: translateY(-5px); 
+}
 
-/* --- Novedad 2: El Confesionario --- */
-#confesionario { min-height: 400px; position: relative; overflow: hidden; }
-.whisper-container { position: relative; width: 100%; height: 300px; }
-.whisper { position: absolute; color: rgba(255,255,255,0.8); font-style: italic; font-size: clamp(1rem, 2vw, 1.5rem); text-shadow: 0 0 8px var(--neon-blue); opacity: 0; font-weight: 600; white-space: nowrap; animation: floatWhisper 6s ease-in-out forwards; }
-@keyframes floatWhisper { 0% { opacity: 0; transform: translateY(20px) scale(0.9); } 20% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-30px) scale(1.1); } }
+.neon-box-blue {
+    border: 1px solid var(--neon-blue);
+    box-shadow: 0 0 10px rgba(0, 102, 255, 0.3), inset 0 0 5px rgba(0, 102, 255, 0.1);
+}
+.neon-box-blue:hover { 
+    box-shadow: 0 0 20px var(--neon-blue), inset 0 0 10px var(--neon-blue); 
+    transform: translateY(-5px); 
+}
 
-/* --- Novedad 3: Speakeasy Modal --- */
-.hidden-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.98); z-index: -1; opacity: 0; transition: opacity 0.5s ease; display: flex; justify-content: center; align-items: center; text-align: center; padding: 20px; }
-.hidden-modal.active { z-index: 9999; opacity: 1; }
-.speakeasy-content { border: 1px solid rgba(255,0,0,0.3); padding: 4rem 2rem; max-width: 600px; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px); }
-.secret-text { color: var(--text-muted); margin-bottom: 2rem; letter-spacing: 2px; }
-.secret-menu { margin-bottom: 3rem; }
-.password { margin-top: 1.5rem; color: #fff; font-size: 1.2rem; text-shadow: 0 0 5px var(--neon-red); }
+/* =========================================
+   BOTONES
+   ========================================= */
+.btn-neon-red {
+    display: inline-block; 
+    padding: 12px 30px; 
+    background: transparent;
+    color: #fff; 
+    font-family: var(--font-body); 
+    font-weight: 600; 
+    text-transform: uppercase;
+    border: 2px solid var(--neon-red); 
+    border-radius: 2px; 
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 26, 64, 0.4); 
+    transition: var(--transition); 
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+.btn-neon-red:hover { 
+    background: var(--neon-red); 
+    box-shadow: 0 0 20px var(--neon-red); 
+}
 
-.glitch { font-size: clamp(2.5rem, 5vw, 4rem); position: relative; color: white; margin-bottom: 1rem; font-family: var(--font-heading); text-transform: uppercase;}
-.glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-.glitch::before { left: 2px; text-shadow: -2px 0 red; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
-.glitch::after { left: -2px; text-shadow: -2px 0 blue; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
-@keyframes glitch-anim { 0% { clip: rect(98px, 9999px, 86px, 0); } 20% { clip: rect(21px, 9999px, 6px, 0); } 40% { clip: rect(100px, 9999px, 84px, 0); } 60% { clip: rect(11px, 9999px, 54px, 0); } 80% { clip: rect(47px, 9999px, 12px, 0); } 100% { clip: rect(62px, 9999px, 20px, 0); } }
-@keyframes glitch-anim2 { 0% { clip: rect(15px, 9999px, 85px, 0); } 20% { clip: rect(93px, 9999px, 11px, 0); } 40% { clip: rect(18px, 9999px, 16px, 0); } 60% { clip: rect(40px, 9999px, 90px, 0); } 80% { clip: rect(74px, 9999px, 3px, 0); } 100% { clip: rect(81px, 9999px, 2px, 0); } }
+.btn-outline-gold {
+    display: inline-block; 
+    padding: 12px 30px; 
+    background: transparent;
+    color: var(--text-gold); 
+    font-family: var(--font-body); 
+    font-weight: 600; 
+    text-transform: uppercase;
+    border: 1px solid var(--text-gold); 
+    border-radius: 2px; 
+    cursor: pointer; 
+    transition: var(--transition); 
+    text-decoration: none;
+    letter-spacing: 1px;
+}
+.btn-outline-gold:hover { 
+    background: rgba(197, 160, 89, 0.1); 
+}
 
-/* --- Resto del código (Layout, Galería, Menú) --- */
-.section-padding { padding: 6rem 5%; }
-.dark-bg { background-color: rgba(2, 3, 6, 0.8); backdrop-filter: blur(10px); }
-h2 { font-size: 3rem; margin-bottom: 4rem; }
+/* =========================================
+   LOGOS
+   ========================================= */
+.nav-logo { height: 35px; width: auto; opacity: 0.9; }
+.footer-logo { max-width: 180px; filter: grayscale(100%) brightness(200%); opacity: 0.6; }
 
-.grid-gallery.staggered { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; align-items: center; }
-.mt-offset { transform: translateY(40px); }
-.gallery-item { border-radius: 24px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.6); position: relative; border: 1px solid rgba(255,255,255,0.05); }
-.gallery-item img { width: 100%; height: 400px; object-fit: cover; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease; filter: brightness(0.7) contrast(1.2); }
-.gallery-item:hover img { transform: scale(1.1) rotate(1deg); filter: brightness(1) contrast(1); }
+/* =========================================
+   OVERLAY, HEADER Y HERO
+   ========================================= */
+.entry-overlay { 
+    position: fixed; 
+    top:0; left:0; width:100%; height:100%; 
+    background:#000; 
+    display:flex; justify-content:center; align-items:center; 
+    z-index:9999; text-align:center; 
+    transition: opacity 0.5s ease; 
+}
+.entry-buttons { 
+    margin-top: 30px; 
+    display: flex; flex-direction: column; gap: 15px; 
+    align-items: center; 
+}
 
-.menu-container { display: flex; flex-wrap: wrap; gap: 3rem; justify-content: center; }
-.menu-category { flex: 1; min-width: 320px; max-width: 600px; }
-.menu-category h3 { font-size: 2rem; margin-bottom: 2rem; text-align: center; }
-.menu-cards { display: flex; flex-direction: column; gap: 1.5rem; }
-.menu-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; transition: all 0.4s ease; position: relative; overflow: hidden; }
-.menu-card:hover { transform: translateX(10px); background: rgba(255, 255, 255, 0.08); border-color: rgba(0, 243, 255, 0.3); box-shadow: -5px 10px 20px rgba(0,0,0,0.5); }
-.menu-card::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: var(--neon-red); opacity: 0; transition: opacity 0.3s ease; }
-.menu-category:nth-child(2) .menu-card::before { background: var(--neon-blue); }
-.menu-card:hover::before { opacity: 1; }
-.menu-info h4 { font-size: 1.3rem; color: #fff; margin-bottom: 5px; }
-.menu-info p { font-size: 0.95rem; color: var(--text-muted); padding-right: 15px;}
-.price { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 900; color: var(--neon-blue); }
+.main-header { 
+    background: rgba(5,5,5,0.95); 
+    padding: 15px 0; 
+    position: fixed; top: 0; width: 100%; z-index: 100; 
+    border-bottom: 1px solid rgba(197, 160, 89, 0.1); 
+}
+.header-flex { display: flex; justify-content: space-between; align-items: center; }
+.main-nav ul { list-style: none; display: flex; gap: 25px; }
+.main-nav a { 
+    text-decoration: none; color: var(--text-light); 
+    font-weight: 400; text-transform: uppercase; 
+    font-size: 0.85rem; letter-spacing: 1px; 
+    transition: var(--transition); 
+}
+.main-nav a.hover-red:hover { color: var(--neon-red); text-shadow: 0 0 8px var(--neon-red); }
+.main-nav a.hover-blue:hover { color: var(--neon-blue); text-shadow: 0 0 8px var(--neon-blue); }
 
-footer { background-color: var(--bg-darker); text-align: center; padding: 6rem 20px 4rem; border-top: 1px solid rgba(255, 42, 64, 0.2); position: relative; }
-.footer-logo { height: 90px; margin-bottom: 1.5rem; filter: drop-shadow(0 0 10px rgba(255,42,64,0.3)); }
-footer p { color: var(--text-muted); }
-.copyright { margin-top: 3rem; font-size: 0.85rem; opacity: 0.5; }
+.menu-toggle { 
+    display: none; flex-direction: column; gap: 6px; 
+    background: transparent; border: none; cursor: pointer; 
+}
+.menu-toggle span { display: block; width: 30px; height: 2px; background: var(--text-gold); }
 
-.reveal { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.5, 0, 0, 1); }
-.reveal.active { opacity: 1; transform: translateY(0); }
+.hero { 
+    height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; position: relative; padding-top: 60px;
+    background-image: url('https://images.unsplash.com/photo-1574096079513-d8259312b785?q=80&w=1600&auto=format&fit=crop');
+    background-size: cover; background-position: center;
+}
+.hero-overlay { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(5,5,5,1) 100%); 
+}
+.hero-content { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; }
 
-@media (max-width: 768px) {
-    .diagonal-cut { clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%); }
-    .diagonal-cut-reverse { clip-path: polygon(0 5%, 100% 0, 100% 100%, 0 100%); margin-top: -8vw; }
-    .mt-offset { transform: none; } 
-    .nav-links { display: flex; flex-direction: column; justify-content: center; position: absolute; top: 0; left: -100%; width: 100vw; height: 100vh; background: rgba(2, 3, 6, 0.98); backdrop-filter: blur(15px); transition: left 0.5s cubic-bezier(0.77, 0, 0.175, 1); }
-    .nav-links.active { left: 0; }
-    .nav-links li { margin: 2rem 0; font-size: 1.5rem; }
-    .hamburger { display: flex; z-index: 1001; }
-    .hamburger.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-    .hamburger.active span:nth-child(2) { opacity: 0; }
-    .hamburger.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+/* =========================================
+   GRILLA DE VÍDEOS (VERTICAL 9:16)
+   ========================================= */
+.menu-section { padding: 100px 0; }
+.grid-menu { 
+    display: grid; 
+    grid-template-columns: 1fr; /* 1 columna en móviles */
+    gap: 30px; 
+}
+
+.menu-item {
+    background: #0a0a0a; 
+    display: flex; 
+    flex-direction: column; /* Mantiene la tarjeta en vertical siempre */
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.item-media { 
+    width: 100%; 
+    aspect-ratio: 9 / 16; /* ¡La magia! Fuerza la proporción vertical de TikTok/Reels */
+    object-fit: cover; 
+    border-bottom: 1px solid rgba(197, 160, 89, 0.1); 
+    background-color: #000;
+}
+
+.item-details { padding: 25px; display: flex; flex-direction: column; flex-grow: 1; }
+.item-details p { color: #aaa; font-size: 0.95rem; font-weight: 300; margin-bottom: 20px; flex-grow: 1; }
+.price { font-size: 1.2rem; font-weight: 600; color: #fff; font-family: var(--font-body); }
+
+/* =========================================
+   FOOTER
+   ========================================= */
+.main-footer { text-align: center; padding: 60px 0; border-top: 1px solid rgba(197, 160, 89, 0.1); }
+.main-footer p { font-weight: 300; font-size: 0.9rem; color: #aaa; }
+.social-links { margin-top: 20px; display: flex; justify-content: center; gap: 20px; }
+.social-links a { 
+    color: var(--text-gold); text-decoration: none; 
+    text-transform: uppercase; font-size: 0.85rem; 
+    letter-spacing: 1px; transition: var(--transition); 
+}
+
+/* =========================================
+   RESPONSIVE (GRID INTELIGENTE)
+   ========================================= */
+/* Tablets: 2 columnas */
+@media (min-width: 768px) {
+    .old-money-hero-title { font-size: 7rem; }
+    .old-money-section-title { font-size: 4rem; }
+    .entry-buttons { flex-direction: row; }
+    
+    .grid-menu { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Portátiles/Escritorio: 3 columnas */
+@media (min-width: 1024px) { 
+    .menu-toggle { display: none; } 
+    .main-nav { display: block; } 
+    .grid-menu { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Pantallas muy grandes: 4 columnas */
+@media (min-width: 1400px) {
+    .grid-menu { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* Ocultar menú en desktop, mostrar hamburguesa en móvil */
+@media (max-width: 1023px) { 
+    .main-nav { display: none; } 
+    .menu-toggle { display: flex; } 
 }
