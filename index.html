@@ -3,220 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>No Tan Santa | Speakeasy & Gourmeats</title>
-    <link rel="icon" href="https://fav.farm/🍕" />
+    <title>Kuruma Imports | Vehículos Exclusivos</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="carbon-bg-body">
 
-    <div id="entry-overlay" class="entry-overlay">
-        <div class="entry-content">
-            <h1 class="old-money-hero-title">No Tan Santa</h1>
-            <p class="mt-20 text-light">¿Eres mayor de 18 años?</p>
-            <div class="entry-buttons">
-                <button id="btn-enter" class="btn-neon-red">Entrar al Pecado</button>
-                <button id="btn-leave" class="btn-outline-gold">Soy un Santo</button>
-            </div>
+    <div class="preloader">
+        <div class="preloader-content">
+            <img src="logo-monogram.png" alt="KI Monogram" class="preloader-logo">
+            <div class="preloader-text">KURUMA <span>IMPORTS</span></div>
         </div>
     </div>
 
-    <div id="main-content" class="main-content hidden">
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <header class="navbar">
+        <div class="brand-container hover-target">
+            <img src="logo-monogram.png" alt="KI Icon" class="navbar-logo-icon">
+            <div class="logo">
+                KURUMA <span>IMPORTS</span>
+            </div>
+        </div>
         
-        <header class="main-header">
-            <div class="container header-flex">
-                <a href="#">
-                    <img src="logo.png" alt="No Tan Santa" class="nav-logo">
-                </a>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="#cocteles" class="hover-red">Elixires</a></li>
-                        <li><a href="#comida" class="hover-blue">Gourmeats</a></li>
-                        <li><a href="#contacto" class="hover-red">Contacto</a></li>
-                    </ul>
-                </nav>
-                <button class="menu-toggle" aria-label="Abrir menú">
-                    <span></span><span></span><span></span>
-                </button>
+        <div class="mobile-menu-btn">
+            <span></span>
+            <span></span>
+        </div>
+
+        <nav class="nav-menu">
+            <ul class="nav-links">
+                <li><a href="#inicio" class="hover-target">Inicio</a></li>
+                <li><a href="#filosofia" class="hover-target">Filosofía</a></li>
+                <li><a href="#catalogo" class="hover-target">Catálogo</a></li>
+                <li class="mobile-only"><a href="#contacto" class="btn-gold">Contactar</a></li>
+            </ul>
+        </nav>
+        <a href="#contacto" class="btn-gold desktop-only hover-target">Contactar</a>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero">
+            <div class="glow-bg"></div>
+            <div class="hero-image-wrapper">
+                <img src="img/hero-bg.jpg" class="hero-img" alt="Hero Moody Imported Car">
             </div>
-        </header>
+            <div class="hero-content">
+                <div class="reveal-text"><p class="subtitle">Importación de Alta Gama</p></div>
+                <div class="reveal-text"><h1 class="title">Ingeniería</h1></div>
+                <div class="reveal-text"><h1 class="title gold-text">Sin Límites.</h1></div>
+            </div>
+        </section>
 
-        <main>
-            <section class="hero">
-                <div class="hero-overlay"></div>
-                <div class="container hero-content">
-                    <h2 class="old-money-hero-title">No Tan Santa</h2>
-                    <h3 class="gold-text-italic mt-20">"Las reglas se rompen, los drinks no se niegan."</h3>
-                    <a href="#cocteles" class="btn-neon-red mt-20">Revelar los Secretos</a>
-                </div>
-            </section>
-
-            <section id="cocteles" class="menu-section container">
-                <h2 class="old-money-section-title">Elixires de Autor</h2>
-                <div class="divider-gold"></div>
-                
-                <div class="grid-menu">
-                    <div class="menu-item neon-box-red">
-                        <video class="item-media" autoplay loop muted playsinline>
-                            <source src="videos/01_SantaCulpa_SantaChula_Gourmeats.mp4" type="video/mp4">
-                        </video>
-                        <div class="item-details">
-                            <h4 class="gold-title">Santa Culpa</h4>
-                            <p>Nuestro cóctel insignia. Bébelo y confiésate después.</p>
-                            <span class="price">15€</span>
-                        </div>
-                    </div>
-                    <div class="menu-item neon-box-blue">
-                        <video class="item-media" autoplay loop muted playsinline>
-                            <source src="videos/0005_mojito del despecho_SantaChula_Gourmeats.mp4" type="video/mp4">
-                        </video>
-                        <div class="item-details">
-                            <h4 class="gold-title">Mojito del Despecho</h4>
-                            <p>Refrescante y traicionero. El equilibrio perfecto para olvidar.</p>
-                            <span class="price">12€</span>
-                        </div>
-                    </div>
-                    <div class="menu-item neon-box-red">
-                        <video class="item-media" autoplay loop muted playsinline>
-                            <source src="videos/07_piña con lágrimas_SantaChula_Gourmeats.mp4" type="video/mp4">
-                        </video>
-                        <div class="item-details">
-                            <h4 class="gold-title">Piña con Lágrimas</h4>
-                            <p>Un toque tropical vibrante con un final melancólico e intenso.</p>
-                            <span class="price">13€</span>
-                        </div>
-                    </div>
-                    <div class="menu-item neon-box-blue">
-                        <video class="item-media" autoplay loop muted playsinline>
-                            <source src="videos/09_navarro infiel_SantaChula_Gourmeats.mp4" type="video/mp4">
-                        </video>
-                        <div class="item-details">
-                            <h4 class="gold-title">Navarro Infiel</h4>
-                            <p>Seducción embotellada. Notas audaces que romperán tus propias reglas.</p>
-                            <span class="price">14€</span>
-                        </div>
-                    </div>
-                    <div class="menu-item neon-box-red">
-                        <video class="item-media" autoplay loop muted playsinline>
-                            <source src="videos/11_lágrimas de judas_SantaChula_Gourmeats.mp4" type="video/mp4">
-                        </video>
-                        <div class="item-details">
-                            <h4 class="gold-title">Lágrimas de Judas</h4>
-                            <p>Un trago con carácter y un inconfundible toque de arrepentimiento dulce.</p>
-                            <span class="price">14€</span>
-                        </div>
-                    </div>
-                    <div class="menu-item neon-box-blue">
-                        <video class="item-media" autoplay loop muted playsinline>
-                            <source src="videos/17_besos de danoninoCORREGIDO_SantaChula_Gourmeats.mp4" type="video/mp4">
-                        </video>
-                        <div class="item-details">
-                            <h4 class="gold-title">Besos de Danonino</h4>
-                            <p>Pura nostalgia transformada en un trago seductor y atrevido.</p>
-                            <span class="price">12€</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="comida" class="menu-section bg-darker">
-                <div class="container">
-                    <h2 class="old-money-section-title">Pecados Capitales</h2>
-                    <div class="divider-gold"></div>
-                    
-                    <div class="grid-menu">
-                        <div class="menu-item neon-box-blue">
-                            <video class="item-media" autoplay loop muted playsinline>
-                                <source src="videos/22_Quesoterapia_SantaChula_Gourmeats.mp4" type="video/mp4">
-                            </video>
-                            <div class="item-details">
-                                <h4 class="gold-title">Quesoterapia</h4>
-                                <p>Fundición de quesos seleccionados. El remedio infalible para el alma.</p>
-                                <span class="price">14€</span>
-                            </div>
-                        </div>
-                        <div class="menu-item neon-box-red">
-                            <video class="item-media" autoplay loop muted playsinline>
-                                <source src="videos/24_CarbonaraLoca_SantaChula_Gourmeats.mp4" type="video/mp4">
-                            </video>
-                            <div class="item-details">
-                                <h4 class="gold-title">Carbonara Loca</h4>
-                                <p>La receta clásica italiana que perdió por completo la cabeza.</p>
-                                <span class="price">16€</span>
-                            </div>
-                        </div>
-                        <div class="menu-item neon-box-blue">
-                            <video class="item-media" autoplay loop muted playsinline>
-                                <source src="videos/31_TacoCochinitaPibil_SantaChula_Gourmeats.mp4" type="video/mp4">
-                            </video>
-                            <div class="item-details">
-                                <h4 class="gold-title">Taco Cochinita Pibil</h4>
-                                <p>Sabor callejero elevado a la máxima potencia. Puro fuego y tradición.</p>
-                                <span class="price">12€</span>
-                            </div>
-                        </div>
-                        <div class="menu-item neon-box-red">
-                            <video class="item-media" autoplay loop muted playsinline>
-                                <source src="videos/37_NachosTex-mex_SantaChula_Gourmeats.mp4" type="video/mp4">
-                            </video>
-                            <div class="item-details">
-                                <h4 class="gold-title">Nachos Tex-Mex</h4>
-                                <p>Crujientes, fundidos y absolutamente llenos de pecado para compartir.</p>
-                                <span class="price">13€</span>
-                            </div>
-                        </div>
-                        <div class="menu-item neon-box-blue">
-                            <video class="item-media" autoplay loop muted playsinline>
-                                <source src="videos/39_QuesadillaBacon_SantaChula_Gourmeats.mp4" type="video/mp4">
-                            </video>
-                            <div class="item-details">
-                                <h4 class="gold-title">Quesadilla Bacon</h4>
-                                <p>El placer culpable definitivo. Texturas que se funden en el paladar.</p>
-                                <span class="price">11€</span>
-                            </div>
-                        </div>
-                        <div class="menu-item neon-box-red">
-                            <video class="item-media" autoplay loop muted playsinline>
-                                <source src="videos/16_besos de chocolate spicy_SantaChula_Gourmeats.mp4" type="video/mp4">
-                            </video>
-                            <div class="item-details">
-                                <h4 class="gold-title">Besos de Chocolate Spicy</h4>
-                                <p>Un postre oscuro y profundo que te muerde de vuelta con un toque picante.</p>
-                                <span class="price">9€</span>
-                            </div>
-                        </div>
-                        <div class="menu-item neon-box-blue">
-                            <video class="item-media" autoplay loop muted playsinline>
-                                <source src="videos/49_TequeñosDeNutella_SantaChula_Gourmeats.mp4" type="video/mp4">
-                            </video>
-                            <div class="item-details">
-                                <h4 class="gold-title">Tequeños de Nutella</h4>
-                                <p>El final perfecto. Crujientes por fuera, con un corazón negro y fundido.</p>
-                                <span class="price">10€</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer id="contacto" class="main-footer">
+        <section id="filosofia" class="about">
+            <img src="logo-monogram.png" alt="" class="logo-watermark">
+            
             <div class="container">
-                <img src="logo.png" alt="No Tan Santa" class="footer-logo">
-                <p class="gold-text-italic mt-20">El escondite perfecto en tu ciudad</p>
-                <p>Reservas: +34 600 000 000</p>
-                <div class="social-links">
-                    <a href="#" class="hover-red">Instagram</a>
-                    <a href="#" class="hover-blue">Ubicación Secreta</a>
+                <div class="about-grid">
+                    <div class="about-text">
+                        <h2 class="section-title">Redefiniendo <br>la Exclusividad</h2>
+                        <p>No buscamos coches, encontramos máquinas excepcionales. Seleccionamos y homologamos los vehículos más codiciados de Japón y Europa con una precisión milimétrica. Minimalismo en el proceso, máxima potencia en tu garaje.</p>
+                    </div>
+                    <div class="about-stats">
+                        <div class="stat hover-target">
+                            <h3>100%</h3>
+                            <p>Transparencia</p>
+                        </div>
+                        <div class="stat hover-target">
+                            <h3>0</h3>
+                            <p>Intermediarios</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </footer>
-    </div>
+        </section>
 
+        <section id="catalogo" class="catalog">
+            <div class="container">
+                <div class="catalog-header">
+                    <h2 class="section-title">El Garaje</h2>
+                </div>
+                
+                <div class="catalog-grid">
+                    <article class="car-card hover-target">
+                        <div class="car-image-container">
+                            <img src="img/nissan-gtr.jpg" class="car-img" alt="Moody Nissan GTR Nismo At Night">
+                        </div>
+                        <div class="car-info">
+                            <div class="car-info-top">
+                                <h3>Nissan GT-R R35 Nismo</h3>
+                                <span class="tagJDM">JDM</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="spec-item">
+                                    <span class="spec-label">Motor</span>
+                                    <span class="spec-value">V6 3.8L Twin-Turbo</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Potencia</span>
+                                    <span class="spec-value">600 CV</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">0-100 km/h</span>
+                                    <span class="spec-value">2.8 seg</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Año / KM</span>
+                                    <span class="spec-value">2021 • 15.000 km</span>
+                                </div>
+                            </div>
+                            <a href="#contacto" class="btn-details hover-target">Solicitar Dossier</a>
+                        </div>
+                    </article>
+
+                    <article class="car-card hover-target">
+                        <div class="car-image-container">
+                            <img src="img/porsche-gt3.jpg" class="car-img" alt="Moody Porsche GT3RS At Night">
+                        </div>
+                        <div class="car-info">
+                            <div class="car-info-top">
+                                <h3>Porsche 911 GT3 RS</h3>
+                                <span class="tagEUR">EUR</span>
+                            </div>
+                            <div class="car-specs-grid">
+                                <div class="spec-item">
+                                    <span class="spec-label">Motor</span>
+                                    <span class="spec-value">4.0L Flat-6 Atmosférico</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Potencia</span>
+                                    <span class="spec-value">520 CV</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">0-100 km/h</span>
+                                    <span class="spec-value">3.2 seg</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-label">Año / KM</span>
+                                    <span class="spec-value">2022 • 8.500 km</span>
+                                </div>
+                            </div>
+                            <a href="#contacto" class="btn-details hover-target">Solicitar Dossier</a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-brand hover-target">
+                <img src="logo-monogram.png" alt="KI Icon" class="footer-logo-icon">
+                <div class="logo">KURUMA <span>IMPORTS</span></div>
+            </div>
+            <p>© 2026 Kuruma Imports. Diseño y Vanguardia Automotriz.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
