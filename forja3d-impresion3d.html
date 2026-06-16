@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="es" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NorthPrints — Impresión 3D técnica de precisión</title>
+<meta name="description" content="Fabricación de piezas técnicas por impresión 3D: automoción, robótica, industria y airsoft. Tolerancias controladas, materiales de ingeniería, entrega rápida.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================
+   TOKENS
+   ============================================ */
+:root{
+  --graphite:#14181C;
+  --graphite-2:#191E23;
+  --steel:#21262C;
+  --steel-2:#262C32;
+  --line:#3A4047;
+  --line-soft:#2A3037;
+  --paper:#EDE9E1;
+  --paper-dim:#C7C3BA;
+  --mist:#878D93;
+  --signal:#FF5A1F;
+  --signal-dim:#B5421A;
+  --signal-glow:rgba(255,90,31,0.18);
+  --ok:#7FBF8F;
+
+  --font-display:'JetBrains Mono',monospace;
+  --font-body:'Inter',sans-serif;
+  --font-data:'JetBrains Mono',monospace;
+
+  --container:1180px;
+  --edge:clamp(20px,5vw,64px);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--graphite);
+  color:var(--paper);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+}
+
+a{color:inherit;text-decoration:none;}
+img{max-width:100%;display:block;}
+button{font-family:inherit;cursor:pointer;}
+
+:focus-visible{
+  outline:2px solid var(--signal);
+  outline-offset:3px;
+}
+
+.wrap{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 var(--edge);
+}
+
+/* ============================================
+   BACKGROUND GRID TEXTURE
+   ============================================ */
+.blueprint-bg{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size:48px 48px;
+  opacity:0.35;
+  pointer-events:none;
+}
+
+.blueprint-bg::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% -10%, rgba(255,90,31,0.07), transparent 60%);
+}
+
+/* ============================================
+   CORNER REGISTRATION MARKS
+   ============================================ */
+.reg-mark{
+  position:absolute;
+  width:18px;
+  height:18px;
+  pointer-events:none;
+  opacity:0.55;
+}
+.reg-mark::before,.reg-mark::after{
+  content:"";
+  position:absolute;
+  background:var(--mist);
+}
+.reg-mark::before{width:100%;height:1px;top:50%;}
+.reg-mark::after{width:1px;height:100%;left:50%;}
+.reg-tl{top:14px;left:14px;}
+.reg-tr{top:14px;right:14px;}
+.reg-bl{bottom:14px;left:14px;}
+.reg-br{bottom:14px;right:14px;}
+
+/* ============================================
+   TYPOGRAPHY
+   ============================================ */
+.eyebrow{
+  font-family:var(--font-data);
+  font-size:11.5px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--signal);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+}
+.eyebrow::before{
+  content:"";
+  width:7px;
+  height:7px;
+  background:var(--signal);
+  display:inline-block;
+}
+
+h1,h2,h3{
+  font-family:var(--font-display);
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:-0.01em;
+  line-height:1.05;
+  color:var(--paper);
+}
+
+h2{
+  font-size:clamp(28px,4.2vw,46px);
+}
+
+h3{
+  font-size:18px;
+  letter-spacing:0.01em;
+}
+
+.lede{
+  font-size:clamp(16px,1.6vw,19px);
+  color:var(--paper-dim);
+  max-width:560px;
+  font-weight:400;
+}
+
+.mono-num{
+  font-family:var(--font-data);
+  font-variant-numeric:tabular-nums;
+}
+
+/* ============================================
+   HEADER
+   ============================================ */
+header{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:100;
+  background:rgba(20,24,28,0.88);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line-soft);
+}
+
+.header-inner{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 var(--edge);
+  height:72px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-family:var(--font-display);
+  font-weight:800;
+  font-size:18px;
+  letter-spacing:0.02em;
+  text-transform:uppercase;
+}
+
+.brand-mark{
+  width:30px;
+  height:30px;
+  border:1.5px solid var(--signal);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  flex-shrink:0;
+}
+.brand-mark::before{
+  content:"";
+  width:10px;
+  height:10px;
+  background:var(--signal);
+}
+
+nav{
+  display:flex;
+  align-items:center;
+  gap:38px;
+}
+
+.nav-links{
+  display:flex;
+  gap:32px;
+  font-family:var(--font-data);
+  font-size:13px;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+}
+
+.nav-links a{
+  color:var(--mist);
+  transition:color 0.2s ease;
+  position:relative;
+  padding-bottom:4px;
+}
+.nav-links a:hover{color:var(--paper);}
+.nav-links a::after{
+  content:"";
+  position:absolute;
+  bottom:0;
+  left:0;
+  width:0;
+  height:1.5px;
+  background:var(--signal);
+  transition:width 0.25s ease;
+}
+.nav-links a:hover::after{width:100%;}
+
+.btn{
+  font-family:var(--font-data);
+  font-size:13px;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  font-weight:700;
+  padding:13px 24px;
+  border:1px solid var(--signal);
+  background:transparent;
+  color:var(--paper);
+  transition:all 0.2s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  white-space:nowrap;
+}
+.btn:hover{
+  background:var(--signal);
+  color:var(--graphite);
+}
+.btn-solid{
+  background:var(--signal);
+  color:var(--graphite);
+}
+.btn-solid:hover{
+  background:var(--paper);
+  border-color:var(--paper);
+  color:var(--graphite);
+}
+
+.menu-toggle{
+  display:none;
+  flex-direction:column;
+  gap:5px;
+  background:none;
+  border:none;
+  padding:8px;
+}
+.menu-toggle span{
+  width:24px;
+  height:2px;
+  background:var(--paper);
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+.hero{
+  position:relative;
+  z-index:1;
+  padding:158px var(--edge) 90px;
+  max-width:var(--container);
+  margin:0 auto;
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:1.05fr 0.95fr;
+  gap:60px;
+  align-items:center;
+}
+
+.hero-title{
+  font-size:clamp(38px,6vw,68px);
+  margin-bottom:24px;
+}
+.hero-title .accent{color:var(--signal);}
+
+.hero-meta{
+  display:flex;
+  gap:28px;
+  margin-top:38px;
+  padding-top:28px;
+  border-top:1px solid var(--line-soft);
+  flex-wrap:wrap;
+}
+
+.hero-meta-item{
+  font-family:var(--font-data);
+}
+.hero-meta-item .num{
+  font-size:24px;
+  font-weight:700;
+  color:var(--paper);
+  display:block;
+}
+.hero-meta-item .lbl{
+  font-size:11px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--mist);
+}
+
+.hero-ctas{
+  display:flex;
+  gap:16px;
+  margin-top:36px;
+  flex-wrap:wrap;
+}
+
+/* --- Hero visual: part on blueprint plate with measuring lines --- */
+.hero-visual{
+  position:relative;
+  aspect-ratio:1/1;
+  border:1px solid var(--line);
+  background:
+    linear-gradient(135deg, var(--steel) 0%, var(--graphite-2) 100%);
+}
+
+.hero-visual::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size:24px 24px;
+}
+
+.hero-tag{
+  position:absolute;
+  top:18px;
+  left:18px;
+  font-family:var(--font-data);
+  font-size:11px;
+  letter-spacing:0.06em;
+  color:var(--mist);
+  z-index:3;
+}
+.hero-tag .ref{color:var(--signal);font-weight:700;}
+
+.part-svg-wrap{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:14%;
+  z-index:2;
+}
+
+.dim-line{
+  stroke:var(--signal);
+  stroke-width:1;
+  opacity:0;
+  animation:dimReveal 0.6s ease forwards;
+}
+.dim-text{
+  fill:var(--signal);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;
+  opacity:0;
+  animation:dimReveal 0.6s ease forwards;
+}
+@keyframes dimReveal{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+.scan-line{
+  position:absolute;
+  left:0;
+  right:0;
+  height:2px;
+  background:linear-gradient(90deg, transparent, var(--signal), transparent);
+  top:0;
+  opacity:0.8;
+  animation:scanMove 3.2s ease-in-out infinite;
+  z-index:4;
+}
+@keyframes scanMove{
+  0%,100%{top:8%;}
+  50%{top:90%;}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .scan-line{display:none;}
+  .dim-line,.dim-text{opacity:1;animation:none;}
+}
+
+/* ============================================
+   SPECS STRIP
+   ============================================ */
+.specs-strip{
+  position:relative;
+  z-index:1;
+  border-top:1px solid var(--line-soft);
+  border-bottom:1px solid var(--line-soft);
+  background:var(--steel);
+}
+.specs-inner{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 var(--edge);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+}
+.spec-cell{
+  padding:28px 24px;
+  border-right:1px solid var(--line-soft);
+}
+.spec-cell:last-child{border-right:none;}
+.spec-cell .spec-label{
+  font-family:var(--font-data);
+  font-size:10.5px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--mist);
+  margin-bottom:8px;
+}
+.spec-cell .spec-value{
+  font-family:var(--font-data);
+  font-size:15px;
+  font-weight:700;
+  color:var(--paper);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.dot{
+  width:6px;
+  height:6px;
+  background:var(--ok);
+  display:inline-block;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.dot.signal{background:var(--signal);}
+
+/* ============================================
+   SECTION SHELL
+   ============================================ */
+section{
+  position:relative;
+  z-index:1;
+  padding:100px var(--edge);
+}
+.section-inner{
+  max-width:var(--container);
+  margin:0 auto;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:40px;
+  margin-bottom:56px;
+  flex-wrap:wrap;
+}
+
+/* ============================================
+   CATALOG GRID
+   ============================================ */
+.catalog-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1px;
+  background:var(--line-soft);
+  border:1px solid var(--line-soft);
+}
+
+.catalog-card{
+  background:var(--graphite-2);
+  padding:36px;
+  position:relative;
+  transition:background 0.3s ease;
+  display:flex;
+  flex-direction:column;
+}
+.catalog-card:hover{background:var(--steel);}
+
+.catalog-ref{
+  position:absolute;
+  top:24px;
+  right:28px;
+  font-family:var(--font-data);
+  font-size:11px;
+  color:var(--mist);
+}
+
+.catalog-visual{
+  width:100%;
+  aspect-ratio:16/10;
+  margin-bottom:24px;
+  position:relative;
+  border:1px solid var(--line-soft);
+  background:linear-gradient(160deg, var(--steel-2), var(--graphite-2));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.catalog-visual svg{width:62%;height:62%;}
+
+.catalog-title{
+  margin-bottom:10px;
+  font-size:20px;
+}
+
+.catalog-desc{
+  color:var(--paper-dim);
+  font-size:14.5px;
+  margin-bottom:20px;
+  flex-grow:1;
+}
+
+.catalog-tags{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+}
+.tag{
+  font-family:var(--font-data);
+  font-size:10.5px;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  color:var(--mist);
+  border:1px solid var(--line);
+  padding:5px 10px;
+}
+
+.catalog-link{
+  font-family:var(--font-data);
+  font-size:12.5px;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  color:var(--signal);
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-weight:700;
+}
+.catalog-link svg{width:13px;height:13px;transition:transform 0.2s ease;}
+.catalog-card:hover .catalog-link svg{transform:translateX(4px);}
+
+/* ============================================
+   MATERIALS SECTION
+   ============================================ */
+.materials-list{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  border-top:1px solid var(--line-soft);
+}
+.material-row{
+  padding:30px 0;
+  border-right:1px solid var(--line-soft);
+  padding-right:30px;
+}
+.material-row:last-child{border-right:none;}
+.material-row:nth-child(3n+1){padding-left:0;}
+
+.material-name{
+  font-size:17px;
+  margin-bottom:6px;
+}
+.material-use{
+  color:var(--mist);
+  font-size:13.5px;
+  margin-bottom:14px;
+}
+.material-bar{
+  height:4px;
+  background:var(--line-soft);
+  margin-bottom:6px;
+  position:relative;
+  overflow:hidden;
+}
+.material-bar-fill{
+  position:absolute;
+  left:0;top:0;bottom:0;
+  background:var(--signal);
+}
+.material-stats{
+  display:flex;
+  justify-content:space-between;
+  font-family:var(--font-data);
+  font-size:10.5px;
+  color:var(--mist);
+  letter-spacing:0.02em;
+}
+
+/* ============================================
+   PROCESS
+   ============================================ */
+.process-rail{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:0;
+  border-top:1px solid var(--line-soft);
+}
+.process-step{
+  padding:32px 28px 0;
+  border-right:1px solid var(--line-soft);
+  position:relative;
+}
+.process-step:last-child{border-right:none;}
+.process-step::before{
+  content:"";
+  position:absolute;
+  top:-1px;
+  left:0;
+  width:0%;
+  height:2px;
+  background:var(--signal);
+  transition:width 0.4s ease;
+}
+.process-step:hover::before{width:100%;}
+
+.process-index{
+  font-family:var(--font-data);
+  font-size:13px;
+  color:var(--signal);
+  margin-bottom:18px;
+  font-weight:700;
+}
+.process-title{
+  font-size:16px;
+  margin-bottom:10px;
+}
+.process-desc{
+  color:var(--mist);
+  font-size:13.5px;
+}
+
+/* ============================================
+   GALLERY
+   ============================================ */
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(2,200px);
+  gap:2px;
+}
+.gallery-item{
+  position:relative;
+  background:var(--steel);
+  border:1px solid var(--line-soft);
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.gallery-item:nth-child(1){grid-column:span 2;grid-row:span 2;}
+.gallery-item:nth-child(4){grid-column:span 2;}
+.gallery-item svg{width:46%;height:46%;opacity:0.92;transition:transform 0.4s ease;}
+.gallery-item:hover svg{transform:scale(1.08);}
+.gallery-caption{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  padding:14px 16px;
+  background:linear-gradient(transparent, rgba(20,24,28,0.92));
+  font-family:var(--font-data);
+  font-size:11px;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+  color:var(--paper-dim);
+}
+.gallery-caption .accent{color:var(--signal);}
+
+/* ============================================
+   TESTIMONIAL / TRUST
+   ============================================ */
+.trust-block{
+  border-top:1px solid var(--line-soft);
+  border-bottom:1px solid var(--line-soft);
+  background:var(--steel);
+}
+.trust-inner{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:80px var(--edge);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:60px;
+  align-items:center;
+}
+.trust-quote{
+  font-family:var(--font-display);
+  font-size:clamp(22px,2.6vw,30px);
+  line-height:1.35;
+  color:var(--paper);
+  font-weight:500;
+  text-transform:none;
+}
+.trust-quote .accent{color:var(--signal);}
+.trust-author{
+  margin-top:24px;
+  font-family:var(--font-data);
+  font-size:12.5px;
+  color:var(--mist);
+  letter-spacing:0.03em;
+}
+.trust-stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+}
+.trust-stat-num{
+  font-family:var(--font-data);
+  font-size:42px;
+  font-weight:800;
+  color:var(--signal);
+  line-height:1;
+}
+.trust-stat-lbl{
+  font-size:12.5px;
+  color:var(--mist);
+  margin-top:8px;
+  letter-spacing:0.02em;
+}
+
+/* ============================================
+   CONTACT / QUOTE FORM
+   ============================================ */
+.contact-grid{
+  display:grid;
+  grid-template-columns:0.85fr 1.15fr;
+  gap:60px;
+}
+.contact-info-item{
+  padding:22px 0;
+  border-top:1px solid var(--line-soft);
+}
+.contact-info-item:first-child{border-top:none;}
+.contact-label{
+  font-family:var(--font-data);
+  font-size:10.5px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--mist);
+  margin-bottom:8px;
+}
+.contact-value{
+  font-size:17px;
+  color:var(--paper);
+}
+.contact-value a:hover{color:var(--signal);}
+
+.quote-form{
+  background:var(--steel);
+  border:1px solid var(--line-soft);
+  padding:40px;
+}
+.form-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-bottom:18px;
+}
+.field{
+  margin-bottom:18px;
+}
+.field label{
+  display:block;
+  font-family:var(--font-data);
+  font-size:11px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--mist);
+  margin-bottom:9px;
+}
+.field input,.field select,.field textarea{
+  width:100%;
+  background:var(--graphite-2);
+  border:1px solid var(--line);
+  color:var(--paper);
+  padding:13px 14px;
+  font-family:var(--font-body);
+  font-size:14.5px;
+  transition:border-color 0.2s ease;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--signal);
+  outline:none;
+}
+.field textarea{resize:vertical;min-height:100px;}
+.field select{
+  appearance:none;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8"><path d="M1 1L6 6L11 1" stroke="%23878D93" stroke-width="1.5" fill="none"/></svg>');
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+}
+.form-note{
+  font-size:12.5px;
+  color:var(--mist);
+  margin-top:16px;
+}
+.form-status{
+  font-family:var(--font-data);
+  font-size:12.5px;
+  margin-top:16px;
+  display:none;
+}
+.form-status.show{display:block;color:var(--ok);}
+
+/* ============================================
+   FAQ
+   ============================================ */
+.faq-item{
+  border-top:1px solid var(--line-soft);
+}
+.faq-item:last-child{border-bottom:1px solid var(--line-soft);}
+.faq-q{
+  width:100%;
+  background:none;
+  border:none;
+  color:var(--paper);
+  text-align:left;
+  padding:24px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-family:var(--font-body);
+  font-size:16.5px;
+  font-weight:600;
+  gap:20px;
+}
+.faq-q .plus{
+  font-family:var(--font-data);
+  font-size:18px;
+  color:var(--signal);
+  flex-shrink:0;
+  transition:transform 0.25s ease;
+}
+.faq-item.open .plus{transform:rotate(45deg);}
+.faq-a{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height 0.3s ease;
+}
+.faq-a-inner{
+  padding-bottom:24px;
+  color:var(--paper-dim);
+  font-size:14.5px;
+  max-width:680px;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer{
+  border-top:1px solid var(--line-soft);
+  padding:60px var(--edge) 36px;
+  position:relative;
+  z-index:1;
+}
+.footer-inner{
+  max-width:var(--container);
+  margin:0 auto;
+}
+.footer-top{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr 1fr;
+  gap:40px;
+  padding-bottom:44px;
+  border-bottom:1px solid var(--line-soft);
+}
+.footer-col h4{
+  font-family:var(--font-data);
+  font-size:11px;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--mist);
+  margin-bottom:18px;
+  font-weight:700;
+}
+.footer-col a,.footer-col p{
+  display:block;
+  color:var(--paper-dim);
+  font-size:14px;
+  margin-bottom:10px;
+  transition:color 0.2s ease;
+}
+.footer-col a:hover{color:var(--signal);}
+.footer-brand-desc{
+  color:var(--mist);
+  font-size:14px;
+  max-width:280px;
+  margin-top:16px;
+}
+.footer-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding-top:28px;
+  font-family:var(--font-data);
+  font-size:11.5px;
+  color:var(--mist);
+  flex-wrap:wrap;
+  gap:12px;
+}
+
+/* ============================================
+   SCROLL REVEAL
+   ============================================ */
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+html.no-js .reveal{
+  opacity:1;
+  transform:none;
+}
+
+/* ============================================
+   RESPONSIVE — TABLET
+   ============================================ */
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;gap:40px;}
+  .hero-visual{max-width:480px;margin:0 auto;}
+  .specs-inner{grid-template-columns:repeat(2,1fr);}
+  .spec-cell:nth-child(2n){border-right:none;}
+  .spec-cell{border-bottom:1px solid var(--line-soft);}
+  .catalog-grid{grid-template-columns:1fr;}
+  .materials-list{grid-template-columns:1fr 1fr;}
+  .material-row:nth-child(3n+1){padding-left:0;}
+  .material-row:nth-child(2n+1){padding-left:0;}
+  .material-row:nth-child(2n){padding-right:0;border-right:none;}
+  .process-rail{grid-template-columns:1fr 1fr;}
+  .process-step{border-bottom:1px solid var(--line-soft);padding-bottom:28px;}
+  .gallery-grid{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(4,180px);}
+  .gallery-item:nth-child(1){grid-column:span 2;grid-row:span 1;}
+  .gallery-item:nth-child(4){grid-column:span 1;}
+  .trust-inner{grid-template-columns:1fr;gap:40px;}
+  .contact-grid{grid-template-columns:1fr;}
+  .footer-top{grid-template-columns:1fr 1fr;gap:32px;}
+}
+
+/* ============================================
+   RESPONSIVE — MOBILE
+   ============================================ */
+@media (max-width:680px){
+  :root{--edge:20px;}
+
+  .nav-links{display:none;}
+  .menu-toggle{display:flex;}
+  .header-inner .btn{display:none;}
+
+  nav.open .nav-links{
+    display:flex;
+    flex-direction:column;
+    position:absolute;
+    top:72px;
+    left:0;
+    right:0;
+    background:var(--graphite);
+    border-bottom:1px solid var(--line-soft);
+    padding:24px var(--edge) 28px;
+    gap:22px;
+  }
+
+  .hero{padding:128px var(--edge) 60px;}
+  .hero-title{font-size:clamp(32px,9vw,42px);}
+  .hero-meta{gap:20px;}
+  .hero-ctas{flex-direction:column;}
+  .hero-ctas .btn{justify-content:center;}
+
+  section{padding:64px var(--edge);}
+  .section-head{flex-direction:column;align-items:flex-start;gap:16px;}
+
+  .specs-inner{grid-template-columns:1fr 1fr;}
+
+  .materials-list{grid-template-columns:1fr;}
+  .material-row{border-right:none !important;padding:24px 0 !important;border-bottom:1px solid var(--line-soft);}
+  .material-row:last-child{border-bottom:none;}
+
+  .process-rail{grid-template-columns:1fr;}
+  .process-step{border-right:none;padding:24px 0;}
+
+  .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:repeat(6,140px);}
+  .gallery-item:nth-child(1){grid-column:span 2;grid-row:span 2;}
+  .gallery-item:nth-child(4){grid-column:span 2;grid-row:span 1;}
+
+  .trust-stats{grid-template-columns:1fr 1fr;}
+  .trust-quote{font-size:22px;}
+
+  .form-row{grid-template-columns:1fr;gap:0;}
+  .quote-form{padding:26px;}
+
+  .footer-top{grid-template-columns:1fr;gap:30px;}
+  .footer-bottom{flex-direction:column;align-items:flex-start;}
+
+  .catalog-card{padding:26px;}
+}
+</style>
+</head>
+<body>
+
+<div class="blueprint-bg" aria-hidden="true"></div>
+
+<!-- ============================================
+     HEADER
+     ============================================ -->
+<header>
+  <div class="header-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      NorthPrints
+    </a>
+    <nav id="mainNav">
+      <div class="nav-links">
+        <a href="#catalogo">Catálogo</a>
+        <a href="#materiales">Materiales</a>
+        <a href="#proceso">Proceso</a>
+        <a href="#galeria">Galería</a>
+        <a href="#contacto">Contacto</a>
+      </div>
+      <a href="#contacto" class="btn btn-solid">Pedir presupuesto</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============================================
+     HERO
+     ============================================ -->
+<main id="top">
+<section class="hero" style="padding-bottom:0;">
+  <div class="reg-mark reg-tl" aria-hidden="true"></div>
+  <div class="reg-mark reg-tr" aria-hidden="true"></div>
+  <div class="hero-grid">
+    <div class="reveal visible">
+      <div class="eyebrow">Taller de fabricación aditiva</div>
+      <h1 class="hero-title">Piezas técnicas<br>que <span class="accent">encajan</span><br>a la primera.</h1>
+      <p class="lede">Impresión 3D de precisión para automoción, robótica, industria y airsoft. Del archivo CAD a la pieza acabada, con tolerancias controladas y materiales de ingeniería.</p>
+
+      <div class="hero-ctas">
+        <a href="#contacto" class="btn btn-solid">
+          Solicitar presupuesto
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7H11M11 7L7 3M11 7L7 11" stroke="currentColor" stroke-width="1.5"/></svg>
+        </a>
+        <a href="#catalogo" class="btn">Ver catálogo</a>
+      </div>
+
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <span class="num mono-num">±0.1<small style="font-size:14px;">mm</small></span>
+          <span class="lbl">Tolerancia tip.</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="num mono-num">48<small style="font-size:14px;">–72h</small></span>
+          <span class="lbl">Producción</span>
+        </div>
+        <div class="hero-meta-item">
+          <span class="num mono-num">8<small style="font-size:14px;"> materiales</small></span>
+          <span class="lbl">PLA a Nylon-CF</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal visible" style="transition-delay:0.1s;">
+      <div class="hero-tag">PIEZA <span class="ref">REF-A114</span> / SOPORTE MOTOR</div>
+      <div class="scan-line" aria-hidden="true"></div>
+      <div class="part-svg-wrap">
+        <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Soporte técnico mecanizado">
+          <!-- bracket-like technical part -->
+          <g stroke="var(--paper)" stroke-width="2" fill="var(--steel-2)">
+            <path d="M50 60 L150 40 L190 70 L190 130 L150 160 L150 200 L90 200 L90 150 L50 130 Z" stroke-linejoin="round"/>
+            <circle cx="75" cy="90" r="10" fill="var(--graphite-2)" stroke="var(--signal)" stroke-width="2"/>
+            <circle cx="160" cy="90" r="10" fill="var(--graphite-2)" stroke="var(--signal)" stroke-width="2"/>
+            <circle cx="120" cy="180" r="10" fill="var(--graphite-2)" stroke="var(--signal)" stroke-width="2"/>
+            <path d="M90 150 L150 160" stroke-dasharray="2 3" opacity="0.5"/>
+            <path d="M105 100 L105 145" opacity="0.4"/>
+            <path d="M135 100 L135 145" opacity="0.4"/>
+          </g>
+          <!-- dimension lines -->
+          <g class="dim-line" style="animation-delay:0.5s;">
+            <line x1="50" y1="30" x2="190" y2="30" />
+            <line x1="50" y1="22" x2="50" y2="38" />
+            <line x1="190" y1="22" x2="190" y2="38" />
+          </g>
+          <text x="100" y="22" class="dim-text" style="animation-delay:0.6s;">86.0 MM</text>
+
+          <g class="dim-line" style="animation-delay:0.8s;">
+            <line x1="212" y1="40" x2="212" y2="200" />
+            <line x1="204" y1="40" x2="220" y2="40" />
+            <line x1="204" y1="200" x2="220" y2="200" />
+          </g>
+          <text x="216" y="125" class="dim-text" transform="rotate(90 216 125)" style="animation-delay:0.9s;">112.4 MM</text>
+
+          <g class="dim-line" style="animation-delay:1.1s;">
+            <circle cx="75" cy="90" r="16" stroke-dasharray="1 2" />
+          </g>
+          <text x="30" y="68" class="dim-text" style="animation-delay:1.2s;">Ø6.0</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SPECS STRIP
+     ============================================ -->
+<div class="specs-strip">
+  <div class="specs-inner">
+    <div class="spec-cell">
+      <div class="spec-label">Tecnología</div>
+      <div class="spec-value"><span class="dot"></span>FDM &amp; SLA</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-label">Lote mínimo</div>
+      <div class="spec-value"><span class="dot"></span>1 unidad</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-label">Control de calidad</div>
+      <div class="spec-value"><span class="dot"></span>100% revisado</div>
+    </div>
+    <div class="spec-cell">
+      <div class="spec-label">Envíos</div>
+      <div class="spec-value"><span class="dot signal"></span>Península 48–72h</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     CATÁLOGO POR SECTORES
+     ============================================ -->
+<section id="catalogo">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">Catálogo</div>
+        <h2>Cuatro sectores,<br>una misma precisión</h2>
+      </div>
+      <p class="lede">Cada pieza se fabrica bajo especificación: material, infill y acabado se ajustan al uso real, no al genérico.</p>
+    </div>
+
+    <div class="catalog-grid reveal">
+
+      <!-- AUTOMOCIÓN -->
+      <article class="catalog-card">
+        <span class="catalog-ref mono-num">SEC-01</span>
+        <div class="catalog-visual">
+          <svg viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Pieza de automoción impresa en 3D">
+            <g stroke="var(--paper)" stroke-width="1.8">
+              <path d="M30 100 C30 70 45 45 100 45 C155 45 170 70 170 100" fill="var(--graphite-2)"/>
+              <rect x="55" y="95" width="90" height="18" rx="2" fill="var(--steel-2)"/>
+              <circle cx="70" cy="105" r="6" fill="none" stroke="var(--signal)"/>
+              <circle cx="130" cy="105" r="6" fill="none" stroke="var(--signal)"/>
+              <path d="M85 45 L85 30 L115 30 L115 45" fill="none"/>
+              <path d="M30 100 L170 100" opacity="0.5"/>
+            </g>
+          </svg>
+        </div>
+        <h3 class="catalog-title">Automoción</h3>
+        <p class="catalog-desc">Soportes de sensores, conductos de aire, clips de carrocería y prototipos de pieza funcional para taller y restauración clásica.</p>
+        <div class="catalog-tags">
+          <span class="tag">ASA</span>
+          <span class="tag">Nylon-CF</span>
+          <span class="tag">Resistente a calor</span>
+        </div>
+        <a href="#contacto" class="catalog-link">Consultar pieza
+          <svg viewBox="0 0 14 14" fill="none"><path d="M3 7H11M11 7L7 3M11 7L7 11" stroke="currentColor" stroke-width="1.5"/></svg>
+        </a>
+      </article>
+
+      <!-- ROBÓTICA -->
+      <article class="catalog-card">
+        <span class="catalog-ref mono-num">SEC-02</span>
+        <div class="catalog-visual">
+          <svg viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Pieza de robótica impresa en 3D">
+            <g stroke="var(--paper)" stroke-width="1.8">
+              <rect x="40" y="60" width="22" height="22" rx="3" fill="var(--steel-2)"/>
+              <path d="M62 71 L100 71" />
+              <circle cx="100" cy="71" r="9" fill="var(--graphite-2)" stroke="var(--signal)"/>
+              <path d="M109 71 L140 50" />
+              <circle cx="140" cy="50" r="9" fill="var(--graphite-2)" stroke="var(--signal)"/>
+              <path d="M149 50 L165 65" />
+              <path d="M159 58 L170 60 L168 71" fill="none"/>
+              <path d="M170 60 L172 75" />
+            </g>
+          </svg>
+        </div>
+        <h3 class="catalog-title">Robótica</h3>
+        <p class="catalog-desc">Pinzas, engranajes, carcasas de servo y estructuras articuladas para brazos robóticos, drones y proyectos de competición.</p>
+        <div class="catalog-tags">
+          <span class="tag">PETG</span>
+          <span class="tag">Nylon</span>
+          <span class="tag">Bajo rozamiento</span>
+        </div>
+        <a href="#contacto" class="catalog-link">Consultar pieza
+          <svg viewBox="0 0 14 14" fill="none"><path d="M3 7H11M11 7L7 3M11 7L7 11" stroke="currentColor" stroke-width="1.5"/></svg>
+        </a>
+      </article>
+
+      <!-- INDUSTRIA -->
+      <article class="catalog-card">
+        <span class="catalog-ref mono-num">SEC-03</span>
+        <div class="catalog-visual">
+          <svg viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Pieza industrial impresa en 3D">
+            <g stroke="var(--paper)" stroke-width="1.8">
+              <rect x="50" y="50" width="100" height="50" fill="var(--graphite-2)"/>
+              <circle cx="65" cy="65" r="5" fill="var(--steel-2)" stroke="var(--signal)"/>
+              <circle cx="135" cy="65" r="5" fill="var(--steel-2)" stroke="var(--signal)"/>
+              <circle cx="65" cy="85" r="5" fill="var(--steel-2)" stroke="var(--signal)"/>
+              <circle cx="135" cy="85" r="5" fill="var(--steel-2)" stroke="var(--signal)"/>
+              <path d="M85 75 L115 75" stroke-dasharray="3 3" opacity="0.6"/>
+              <path d="M50 50 L40 40 M150 50 L160 40 M50 100 L40 110 M150 100 L160 110" opacity="0.5"/>
+            </g>
+          </svg>
+        </div>
+        <h3 class="catalog-title">Industria</h3>
+        <p class="catalog-desc">Utillaje de planta, plantillas de montaje, repuestos descatalogados y piezas de sustitución bajo demanda para maquinaria.</p>
+        <div class="catalog-tags">
+          <span class="tag">PA12</span>
+          <span class="tag">Alta rigidez</span>
+          <span class="tag">Series cortas</span>
+        </div>
+        <a href="#contacto" class="catalog-link">Consultar pieza
+          <svg viewBox="0 0 14 14" fill="none"><path d="M3 7H11M11 7L7 3M11 7L7 11" stroke="currentColor" stroke-width="1.5"/></svg>
+        </a>
+      </article>
+
+      <!-- AIRSOFT -->
+      <article class="catalog-card">
+        <span class="catalog-ref mono-num">SEC-04</span>
+        <div class="catalog-visual">
+          <svg viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Pieza de airsoft impresa en 3D">
+            <g stroke="var(--paper)" stroke-width="1.8">
+              <path d="M30 85 L130 85 L130 70 L155 70 L155 90 L130 90 L130 100 L60 100 L60 92 L30 92 Z" fill="var(--graphite-2)"/>
+              <rect x="65" y="100" width="14" height="28" rx="2" fill="var(--steel-2)"/>
+              <path d="M155 78 L172 78" stroke="var(--signal)"/>
+              <circle cx="40" cy="88" r="2" fill="var(--signal)" stroke="none"/>
+              <path d="M90 85 L90 70" opacity="0.4"/>
+              <path d="M110 85 L110 70" opacity="0.4"/>
+            </g>
+          </svg>
+        </div>
+        <h3 class="catalog-title">Airsoft</h3>
+        <p class="catalog-desc">Grips ergonómicos, raíles RIS, carcasas de gearbox y piezas de personalización pensadas para uso intensivo en campo.</p>
+        <div class="catalog-tags">
+          <span class="tag">Nylon-CF</span>
+          <span class="tag">Anti-impacto</span>
+          <span class="tag">A medida</span>
+        </div>
+        <a href="#contacto" class="catalog-link">Consultar pieza
+          <svg viewBox="0 0 14 14" fill="none"><path d="M3 7H11M11 7L7 3M11 7L7 11" stroke="currentColor" stroke-width="1.5"/></svg>
+        </a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     MATERIALES
+     ============================================ -->
+<section id="materiales" style="background:var(--graphite-2);">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">Materiales</div>
+        <h2>El material correcto<br>para cada esfuerzo</h2>
+      </div>
+      <p class="lede">No usamos un único filamento para todo. Cada pedido se evalúa según carga, temperatura de trabajo y exposición.</p>
+    </div>
+
+    <div class="materials-list reveal">
+      <div class="material-row">
+        <div class="material-name">PLA+</div>
+        <div class="material-use">Prototipos, piezas estéticas, bajo esfuerzo</div>
+        <div class="material-bar"><div class="material-bar-fill" style="width:35%;"></div></div>
+        <div class="material-stats"><span>RESISTENCIA</span><span>BAJA-MEDIA</span></div>
+      </div>
+      <div class="material-row">
+        <div class="material-name">PETG</div>
+        <div class="material-use">Uso general, piezas con flexión moderada</div>
+        <div class="material-bar"><div class="material-bar-fill" style="width:55%;"></div></div>
+        <div class="material-stats"><span>RESISTENCIA</span><span>MEDIA</span></div>
+      </div>
+      <div class="material-row">
+        <div class="material-name">ASA</div>
+        <div class="material-use">Exterior, automoción, exposición UV</div>
+        <div class="material-bar"><div class="material-bar-fill" style="width:62%;"></div></div>
+        <div class="material-stats"><span>RESISTENCIA</span><span>MEDIA-ALTA</span></div>
+      </div>
+      <div class="material-row">
+        <div class="material-name">Nylon (PA)</div>
+        <div class="material-use">Engranajes, piezas de fricción, robótica</div>
+        <div class="material-bar"><div class="material-bar-fill" style="width:78%;"></div></div>
+        <div class="material-stats"><span>RESISTENCIA</span><span>ALTA</span></div>
+      </div>
+      <div class="material-row">
+        <div class="material-name">Nylon-CF</div>
+        <div class="material-use">Estructural, airsoft, alto impacto</div>
+        <div class="material-bar"><div class="material-bar-fill" style="width:92%;"></div></div>
+        <div class="material-stats"><span>RESISTENCIA</span><span>MUY ALTA</span></div>
+      </div>
+      <div class="material-row">
+        <div class="material-name">Resina técnica (NO DISPONIBLE)</div>
+        <div class="material-use">Detalle fino, piezas de precisión visual</div>
+        <div class="material-bar"><div class="material-bar-fill" style="width:48%;"></div></div>
+        <div class="material-stats"><span>RESISTENCIA</span><span>MEDIA</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     PROCESO
+     ============================================ -->
+<section id="proceso">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">Orden de fabricación</div>
+        <h2>De tu idea a la<br>pieza en mano</h2>
+      </div>
+    </div>
+
+    <div class="process-rail reveal">
+      <div class="process-step">
+        <div class="process-index">01 / ENTRADA</div>
+        <div class="process-title">Envías el archivo o la idea</div>
+        <div class="process-desc">STL, STEP o un boceto con medidas. Si no tienes archivo, te ayudamos a modelarlo.</div>
+      </div>
+      <div class="process-step">
+        <div class="process-index">02 / ANÁLISIS</div>
+        <div class="process-title">Estudiamos la pieza</div>
+        <div class="process-desc">Material, orientación de impresión, infill y tolerancias según el uso real que le vas a dar.</div>
+      </div>
+      <div class="process-step">
+        <div class="process-index">03 / FABRICACIÓN</div>
+        <div class="process-title">Imprimimos y verificamos</div>
+        <div class="process-desc">Control dimensional con calibre digital antes de pasar a acabado y empaquetado.</div>
+      </div>
+      <div class="process-step">
+        <div class="process-index">04 / ENTREGA</div>
+        <div class="process-title">Recoges o lo enviamos</div>
+        <div class="process-desc">Recogida en taller o envío a domicilio en 24–72h según destino y volumen.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     GALERÍA
+     ============================================ -->
+<section id="galeria" style="background:var(--graphite-2);">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">Galería</div>
+        <h2>Piezas que ya<br>están en marcha</h2>
+      </div>
+    </div>
+
+    <div class="gallery-grid reveal">
+      <div class="gallery-item">
+        <svg viewBox="0 0 200 200" fill="none"><g stroke="var(--paper)" stroke-width="1.6"><path d="M40 160 L40 90 L100 50 L160 90 L160 160" fill="var(--steel)"/><circle cx="100" cy="120" r="22" fill="none" stroke="var(--signal)"/><path d="M100 98 L100 142 M78 120 L122 120" opacity="0.5"/></g></svg>
+        <div class="gallery-caption">Brazo robótico <span class="accent">/ Pinza modular</span></div>
+      </div>
+      <div class="gallery-item">
+        <svg viewBox="0 0 200 200" fill="none"><g stroke="var(--paper)" stroke-width="1.6"><rect x="55" y="55" width="90" height="90" rx="4" fill="var(--steel)"/><circle cx="75" cy="75" r="6" stroke="var(--signal)"/><circle cx="125" cy="75" r="6" stroke="var(--signal)"/><circle cx="75" cy="125" r="6" stroke="var(--signal)"/><circle cx="125" cy="125" r="6" stroke="var(--signal)"/></g></svg>
+        <div class="gallery-caption">Bastidor industrial</div>
+      </div>
+      <div class="gallery-item">
+        <svg viewBox="0 0 200 200" fill="none"><g stroke="var(--paper)" stroke-width="1.6"><path d="M50 100 C50 75 70 60 100 60 C130 60 150 75 150 100" fill="var(--steel)"/><rect x="60" y="100" width="80" height="14" fill="var(--graphite-2)"/></g></svg>
+        <div class="gallery-caption">piña para volante&nbsp;</div>
+      </div>
+      <div class="gallery-item">
+        <svg viewBox="0 0 200 200" fill="none"><g stroke="var(--paper)" stroke-width="1.6"><path d="M40 110 L150 110 L150 95 L172 95 L172 120 L150 120" fill="var(--steel)"/><rect x="72" y="120" width="14" height="32" fill="var(--graphite-2)"/></g></svg>
+        <div class="gallery-caption">Grip <span class="accent">/ Airsoft</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     TRUST / TESTIMONIAL
+     ============================================ -->
+<div class="trust-block">
+  <div class="trust-inner reveal">
+    <div>
+      <p class="trust-quote">"Les mandé el repuesto descatalogado de una furgoneta de los 90 y en <span class="accent">48 horas</span> tenía la pieza montada. Encajó a la primera."</p>
+      <div class="trust-author">— Taller mecánico, cliente desde 2025</div>
+    </div>
+    <div class="trust-stats">
+      <div>
+        <div class="trust-stat-num mono-num">1.200<small style="font-size:20px;">+</small></div>
+        <div class="trust-stat-lbl">Piezas entregadas</div>
+      </div>
+      <div>
+        <div class="trust-stat-num mono-num">98<small style="font-size:20px;">%</small></div>
+        <div class="trust-stat-lbl">Encaja a la primera</div>
+      </div>
+      <div>
+        <div class="trust-stat-num mono-num">4</div>
+        <div class="trust-stat-lbl">Sectores atendidos</div>
+      </div>
+      <div>
+        <div class="trust-stat-num mono-num">48H<small style="font-size:20px;"></small></div>
+        <div class="trust-stat-lbl">Tiempo medio</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================
+     CONTACTO / PRESUPUESTO
+     ============================================ -->
+<section id="contacto">
+  <div class="section-inner">
+    <div class="section-head reveal">
+      <div>
+        <div class="eyebrow">Contacto</div>
+        <h2>Cuéntanos qué<br>pieza necesitas</h2>
+      </div>
+      <p class="lede">Respondemos con un presupuesto orientativo en menos de 24 horas laborables.</p>
+    </div>
+
+    <div class="contact-grid reveal">
+      <div>
+        <div class="contact-info-item">
+          <div class="contact-label">Email</div>
+          <div class="contact-value"><a href="mailto:taller@NorthPrints.es">taller@NorthPrints.es</a></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-label">Teléfono / WhatsApp</div>
+          <div class="contact-value"><a href="tel:+34600000000">+34 600 00 00 00</a></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-label">Taller</div>
+          <div class="contact-value">PAMPLONA · recogida con cita previa</div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-label">Horario</div>
+          <div class="contact-value">Lun–Vie · 9:00–18:00</div>
+        </div>
+      </div>
+
+      <form class="quote-form" id="quoteForm">
+        <div class="form-row">
+          <div class="field">
+            <label for="f-name">Nombre</label>
+            <input type="text" id="f-name" name="name" required placeholder="Tu nombre">
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input type="email" id="f-email" name="email" required placeholder="tucorreo@ejemplo.com">
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-sector">Sector</label>
+          <select id="f-sector" name="sector">
+            <option>Automoción</option>
+            <option>Robótica</option>
+            <option>Industria</option>
+            <option>Airsoft</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-detalle">Describe la pieza</label>
+          <textarea id="f-detalle" name="detalle" placeholder="Material deseado, cantidad, archivo CAD si lo tienes, plazo..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-solid" style="width:100%;justify-content:center;">
+          Enviar solicitud
+        </button>
+        <p class="form-note">Al enviar aceptas que te contactemos para preparar tu presupuesto. Sin spam.</p>
+        <p class="form-status" id="formStatus">✓ Solicitud registrada. Te escribimos en menos de 24h.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     FAQ
+     ============================================ -->
+<section style="background:var(--graphite-2);padding-top:80px;">
+  <div class="section-inner" style="max-width:760px;">
+    <div class="eyebrow">Preguntas frecuentes</div>
+    <h2 style="margin-bottom:40px;">Antes de escribirnos</h2>
+
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">
+        ¿Necesito tener el archivo 3D listo?
+        <span class="plus">+</span>
+      </button>
+      <div class="faq-a"><div class="faq-a-inner">No siempre. Si tienes el archivo STL o STEP, mejor; si solo tienes una pieza rota o una idea con medidas, podemos modelarla nosotros antes de imprimir.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">
+        ¿Qué tolerancia dimensional puedo esperar?
+        <span class="plus">+</span>
+      </button>
+      <div class="faq-a"><div class="faq-a-inner">Trabajamos con tolerancias típicas de ±0.05 a ±0.15 mm según geometría, material y tecnología (FDM o resina). Para encajes críticos, lo indicamos en el presupuesto.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">
+        ¿Hacéis piezas de una sola unidad?
+        <span class="plus">+</span>
+      </button>
+      <div class="faq-a"><div class="faq-a-inner">Sí. No hay lote mínimo: fabricamos desde una unidad para repuestos puntuales hasta series cortas para talleres y equipos.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" aria-expanded="false">
+        ¿Las piezas de airsoft soportan uso intensivo en campo?
+        <span class="plus">+</span>
+      </button>
+      <div class="faq-a"><div class="faq-a-inner">Para piezas de impacto o estructurales (grips, gearbox, raíles) recomendamos Nylon-CF por su resistencia. Te asesoramos según la réplica y el tipo de partida.</div></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================================
+     FOOTER
+     ============================================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-col">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          NorthPrints
+        </div>
+        <p class="footer-brand-desc">Taller de impresión 3D técnica especializado en piezas funcionales para automoción, robótica, industria y airsoft.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navegación</h4>
+        <a href="#catalogo">Catálogo</a>
+        <a href="#materiales">Materiales</a>
+        <a href="#proceso">Proceso</a>
+        <a href="#galeria">Galería</a>
+      </div>
+      <div class="footer-col">
+        <h4>Sectores</h4>
+        <a href="#catalogo">Automoción</a>
+        <a href="#catalogo">Robótica</a>
+        <a href="#catalogo">Industria</a>
+        <a href="#catalogo">Airsoft</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contacto</h4>
+        <a href="mailto:taller@NorthPrints.es">taller@NorthPrints.es</a>
+        <a href="tel:+34600000000">+34 600 00 00 00</a>
+        <p>Madrid, España</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NorthPrints — Fabricación bajo pedido</span>
+      <span>Diseñado y fabricado en taller propio</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.remove('no-js');
+
+// Mobile menu toggle
+const menuToggle = document.getElementById('menuToggle');
+const mainNav = document.getElementById('mainNav');
+menuToggle.addEventListener('click', () => {
+  const isOpen = mainNav.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded', isOpen);
+});
+mainNav.querySelectorAll('.nav-links a').forEach(link => {
+  link.addEventListener('click', () => {
+    mainNav.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  });
+});
+
+// FAQ accordion
+document.querySelectorAll('.faq-item').forEach(item => {
+  const btn = item.querySelector('.faq-q');
+  const answer = item.querySelector('.faq-a');
+  btn.addEventListener('click', () => {
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(openItem => {
+      if (openItem !== item) {
+        openItem.classList.remove('open');
+        openItem.querySelector('.faq-a').style.maxHeight = null;
+        openItem.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+      }
+    });
+    if (isOpen) {
+      item.classList.remove('open');
+      answer.style.maxHeight = null;
+      btn.setAttribute('aria-expanded', 'false');
+    } else {
+      item.classList.add('open');
+      answer.style.maxHeight = answer.scrollHeight + 'px';
+      btn.setAttribute('aria-expanded', 'true');
+    }
+  });
+});
+
+// Quote form submission (demo — no backend)
+const quoteForm = document.getElementById('quoteForm');
+const formStatus = document.getElementById('formStatus');
+quoteForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  formStatus.classList.add('show');
+  quoteForm.querySelector('button[type="submit"]').textContent = 'Solicitud enviada ✓';
+  setTimeout(() => {
+    quoteForm.reset();
+  }, 600);
+});
+
+// Scroll reveal (con fallback si IntersectionObserver no está disponible)
+const revealEls = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(el => observer.observe(el));
+} else {
+  revealEls.forEach(el => el.classList.add('visible'));
+}
+
+// Header background intensifies on scroll (subtle)
+const headerEl = document.querySelector('header');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 40) {
+    headerEl.style.background = 'rgba(20,24,28,0.97)';
+  } else {
+    headerEl.style.background = 'rgba(20,24,28,0.88)';
+  }
+});
+</script>
+
+</body>
+</html>
