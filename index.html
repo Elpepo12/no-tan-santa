@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="es" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEFY CRIS | Atelier Mecánico & Automóviles Nacionales y de Importación</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Cormorant Garamond (Editorial Luxury) & Plus Jakarta Sans (Clean Technical) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons (Non-blocking load for fast mobile rendering) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+
+    <!-- GSAP & ScrollTrigger (Deferred execution) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        obsidian: {
+                            950: '#060606',
+                            900: '#0D0D0D',
+                            800: '#141414',
+                            700: '#1F1F1F'
+                        },
+                        gold: {
+                            200: '#F3E5AB',
+                            300: '#E5C878',
+                            400: '#D4AF37',
+                            500: '#C5A059',
+                            600: '#9A7B38'
+                        },
+                        ivory: '#F5F5F0',
+                        warmgray: '#8C8881'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --cursor-x: 50vw;
+            --cursor-y: 50vh;
+        }
+
+        body {
+            background-color: #060606;
+            color: #F5F5F0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Minimalist Gold Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060606;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #26221A;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+
+        /* Luxury Borders & Surfaces */
+        .gold-border {
+            border: 1px solid rgba(212, 175, 55, 0.18);
+        }
+        .gold-border-subtle {
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+        .luxury-surface {
+            background-color: #0D0D0D;
+            border: 1px solid rgba(212, 175, 55, 0.16);
+            transition: border-color 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+        }
+        .luxury-surface:hover {
+            border-color: rgba(212, 175, 55, 0.45);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85);
+        }
+
+        /* Mobile-first lightweight glass; blur only on capable desktop devices */
+        .luxury-nav {
+            background-color: rgba(6, 6, 6, 0.94);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.14);
+        }
+        @media (pointer: fine) {
+            .luxury-nav {
+                background-color: rgba(6, 6, 6, 0.82);
+                backdrop-filter: blur(14px);
+                -webkit-backdrop-filter: blur(14px);
+            }
+        }
+
+        /* Gold Gradient Text */
+        .text-gold-gradient {
+            background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #C5A059 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Gold Button Primary */
+        .btn-gold {
+            background: linear-gradient(135deg, #D4AF37 0%, #C5A059 100%);
+            color: #060606;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-gold:hover {
+            background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 100%);
+            box-shadow: 0 8px 25px -5px rgba(212, 175, 55, 0.35);
+            transform: translateY(-1px);
+        }
+
+        /* Gold Button Outline */
+        .btn-gold-outline {
+            background: transparent;
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            color: #F5F5F0;
+            transition: all 0.3s ease;
+        }
+        .btn-gold-outline:hover {
+            border-color: #D4AF37;
+            background: rgba(212, 175, 55, 0.08);
+            color: #F3E5AB;
+        }
+
+        /* Desktop-Only Ambient Gold Spotlight & 3D Perspective */
+        .desktop-spotlight {
+            display: none;
+        }
+        @media (pointer: fine) {
+            .desktop-spotlight {
+                display: block;
+                pointer-events: none;
+                position: fixed;
+                inset: 0;
+                z-index: 1;
+                background: radial-gradient(
+                    650px circle at var(--cursor-x) var(--cursor-y),
+                    rgba(212, 175, 55, 0.045),
+                    transparent 75%
+                );
+            }
+            .perspective-stage {
+                perspective: 1200px;
+                transform-style: preserve-3d;
+            }
+            .preserve-3d {
+                transform-style: preserve-3d;
+                will-change: transform;
+            }
+        }
+
+        /* GPU Acceleration Hints */
+        .gpu-accel {
+            will-change: transform, opacity;
+            transform: translateZ(0);
+        }
+
+        /* Custom Range Input in Gold */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #1F1F1F;
+            height: 4px;
+            border-radius: 999px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #D4AF37;
+            cursor: pointer;
+            border: 2px solid #060606;
+        }
+    </style>
+</head>
+<body class="selection:bg-gold-400 selection:text-obsidian-950">
+
+    <!-- Subtle Ambient Gold Spotlight (Active only on desktop mice) -->
+    <div class="desktop-spotlight" id="desktopSpotlight"></div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-2.5 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- ==================== FLOATING ADMIN BAR (ONLY VISIBLE WHEN LOGGED IN) ==================== -->
+    <div id="floatingAdminBar" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[65] hidden items-center gap-2 sm:gap-4 px-4 sm:px-6 py-3 rounded-full bg-obsidian-900/95 border border-gold-400/50 shadow-2xl">
+        <div class="flex items-center gap-2 pr-2 border-r border-white/10">
+            <span class="w-2 h-2 rounded-full bg-gold-400 animate-pulse"></span>
+            <span class="text-[11px] uppercase tracking-widest text-gold-200 font-medium hidden sm:inline">Admin Activo</span>
+        </div>
+        <button onclick="openAdminDashboard()" class="text-xs font-medium text-ivory hover:text-gold-300 transition-colors flex items-center gap-1.5">
+            <i class="fa-solid fa-plus text-gold-400"></i>
+            <span>Publicar / Stock</span>
+        </button>
+        <button onclick="openCodeExportModal()" class="text-xs font-medium text-warmgray hover:text-ivory transition-colors flex items-center gap-1.5 pl-2 border-l border-white/10">
+            <i class="fa-solid fa-code text-gold-400"></i>
+            <span class="hidden md:inline">Archivos Separados</span>
+        </button>
+        <button onclick="logoutAdmin()" class="text-xs text-warmgray hover:text-red-400 transition-colors pl-2 border-l border-white/10" title="Cerrar sesión">
+            <i class="fa-solid fa-power-off"></i>
+        </button>
+    </div>
+
+    <!-- ==================== MINIMALIST HEADER / NAVBAR ==================== -->
+    <header class="fixed top-0 left-0 right-0 z-50 luxury-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-5 sm:px-10 h-20 flex items-center justify-between">
+            
+            <!-- Brand Logo -->
+            <a href="#hero" class="flex items-center gap-3.5 group focus:outline-none">
+                <div class="w-9 h-9 rounded-full border border-gold-400/50 flex items-center justify-center bg-obsidian-900 group-hover:border-gold-300 transition-colors">
+                    <span class="font-serif font-semibold text-gold-400 text-lg tracking-wider">SC</span>
+                </div>
+                <div>
+                    <span class="font-serif font-semibold text-xl sm:text-2xl tracking-[0.18em] text-ivory block leading-none">STEFY CRIS</span>
+                    <span class="text-[9px] uppercase tracking-[0.28em] text-warmgray block mt-1">Atelier & Import Motors</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation (Spacious & Uncluttered) -->
+            <nav class="hidden md:flex items-center gap-10 text-xs uppercase tracking-[0.2em] text-warmgray font-medium">
+                <a href="#catalogo" class="hover:text-gold-300 transition-colors py-1">Colección</a>
+                <a href="#experiencia-3d" class="hover:text-gold-300 transition-colors py-1">El Atelier</a>
+                <a href="#taller" class="hover:text-gold-300 transition-colors py-1">Taller Alta Gama</a>
+                <a href="#importacion" class="hover:text-gold-300 transition-colors py-1">Importación</a>
+            </nav>
+
+            <!-- Client Action Only (No Admin Button Here) -->
+            <div class="flex items-center gap-3">
+                <button onclick="openBookingModal('Cita de Taller')" class="btn-gold-outline px-5 py-2.5 rounded-full text-xs uppercase tracking-[0.15em] font-medium">
+                    Cita Taller
+                </button>
+
+                <!-- Mobile Menu Trigger -->
+                <button onclick="toggleMobileMenu()" class="md:hidden w-10 h-10 rounded-full border border-gold-400/25 flex items-center justify-center text-ivory hover:text-gold-400" aria-label="Menú">
+                    <i class="fa-solid fa-bars text-sm" id="mobileMenuIcon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden bg-obsidian-900 border-b border-gold-400/20 px-6 py-6">
+            <div class="flex flex-col gap-4 text-xs uppercase tracking-[0.2em] text-ivory">
+                <a href="#catalogo" onclick="toggleMobileMenu()" class="py-2 border-b border-white/5 hover:text-gold-400">Colección en Stock</a>
+                <a href="#experiencia-3d" onclick="toggleMobileMenu()" class="py-2 border-b border-white/5 hover:text-gold-400">Ingeniería Stefy Cris</a>
+                <a href="#taller" onclick="toggleMobileMenu()" class="py-2 border-b border-white/5 hover:text-gold-400">Servicios de Taller</a>
+                <a href="#importacion" onclick="toggleMobileMenu()" class="py-2 border-b border-white/5 hover:text-gold-400">Importación Europea</a>
+                <button onclick="toggleMobileMenu(); openBookingModal('Cita de Taller');" class="btn-gold w-full py-3.5 rounded-full text-xs uppercase tracking-[0.18em] mt-2">
+                    Solicitar Cita Previa
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== HERO SECTION (AIRY LUXURY & DESKTOP 3D PARALLAX) ==================== -->
+    <section id="hero" class="relative min-h-screen pt-28 pb-20 lg:pt-36 lg:pb-28 flex items-center overflow-hidden">
+        <!-- Subtle Warm Ambient Glow -->
+        <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[32rem] h-[32rem] bg-gold-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-5 sm:px-10 relative z-10 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+                
+                <!-- Left Column: Editorial Typography -->
+                <div class="lg:col-span-6 space-y-8" id="heroContent">
+                    <div class="inline-flex items-center gap-3">
+                        <span class="w-8 h-[1px] bg-gold-400"></span>
+                        <span class="text-[11px] uppercase tracking-[0.28em] text-gold-400 font-medium">Taller Especializado & Concesionario</span>
+                    </div>
+
+                    <h1 class="font-serif font-medium text-4xl sm:text-6xl xl:text-7xl leading-[1.06] tracking-tight text-ivory">
+                        Artesanía <span class="italic font-normal text-gold-gradient">Mecánica.</span><br>
+                        Selección de Élite.
+                    </h1>
+
+                    <p class="text-warmgray text-base sm:text-lg max-w-lg leading-relaxed font-light">
+                        En <span class="text-ivory font-normal">Stefy Cris</span> unimos la precisión de nuestro taller de alta gama con una cuidada selección de vehículos <span class="text-ivory font-normal">Nacionales</span> y de <span class="text-ivory font-normal">Importación Europea</span> rigurosamente certificados.
+                    </p>
+
+                    <!-- Clean Action Buttons -->
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="#catalogo" class="btn-gold px-8 py-4 rounded-full text-xs uppercase tracking-[0.2em] inline-flex items-center gap-3">
+                            <span>Descubrir Stock</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                        <button onclick="openBookingModal('Importación a la Carta')" class="btn-gold-outline px-7 py-4 rounded-full text-xs uppercase tracking-[0.2em]">
+                            Importación a la Carta
+                        </button>
+                    </div>
+
+                    <!-- Minimalist Metrics -->
+                    <div class="pt-8 grid grid-cols-3 gap-6 border-t border-gold-400/15 max-w-md">
+                        <div>
+                            <span class="font-serif text-3xl sm:text-4xl text-gold-300 block">150+</span>
+                            <span class="text-[11px] uppercase tracking-wider text-warmgray block mt-1">Puntos de Auditoría</span>
+                        </div>
+                        <div>
+                            <span class="font-serif text-3xl sm:text-4xl text-gold-300 block">100%</span>
+                            <span class="text-[11px] uppercase tracking-wider text-warmgray block mt-1">Km Certificados</span>
+                        </div>
+                        <div>
+                            <span class="font-serif text-3xl sm:text-4xl text-gold-300 block">24M</span>
+                            <span class="text-[11px] uppercase tracking-wider text-warmgray block mt-1">Garantía Propia</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Uncluttered 3D Parallax Frame -->
+                <div class="lg:col-span-6 perspective-stage" id="hero3DStage">
+                    <div id="hero3DCard" class="preserve-3d relative rounded-2xl p-3 bg-obsidian-900 gold-border shadow-2xl">
+                        <div class="relative rounded-xl overflow-hidden aspect-[16/11] bg-obsidian-950">
+                            <img 
+                                id="heroCarImage"
+                                src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1000&q=80" 
+                                alt="Porsche 911 GT3 Stefy Cris" 
+                                fetchpriority="high"
+                                decoding="async"
+                                class="w-full h-full object-cover object-center scale-105 gpu-accel"
+                                onerror="this.src='https://placehold.co/1000x700/0D0D0D/D4AF37?text=STEFY+CRIS'"
+                            >
+                            <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950/90 via-transparent to-transparent"></div>
+
+                            <!-- Single Discreet Luxury Plaque inside image -->
+                            <div class="absolute bottom-5 left-5 right-5 flex items-end justify-between">
+                                <div>
+                                    <span class="text-[10px] uppercase tracking-[0.25em] text-gold-400 block">Unidad Destacada</span>
+                                    <span class="font-serif text-xl sm:text-2xl text-ivory">Porsche 911 Carrera S (992)</span>
+                                </div>
+                                <span class="px-3.5 py-1.5 rounded-full bg-obsidian-950/85 gold-border text-[10px] uppercase tracking-[0.2em] text-gold-200">
+                                    Certificado Stefy Cris
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SCROLLTRIGGER EXPANDING SHOWCASE ==================== -->
+    <section id="experiencia-3d" class="relative py-24 lg:py-32 bg-obsidian-900/50 border-y border-gold-400/10 overflow-hidden">
+        <div class="max-w-4xl mx-auto px-5 sm:px-10 mb-14 text-center">
+            <span class="text-[11px] uppercase tracking-[0.3em] text-gold-400 block mb-3">Ingeniería & Confianza</span>
+            <h2 class="font-serif font-medium text-3xl sm:text-5xl text-ivory tracking-tight">
+                Del Elevador a la Carretera
+            </h2>
+            <p class="text-warmgray text-sm sm:text-base max-w-xl mx-auto mt-4 font-light leading-relaxed">
+                Cada automóvil nacional o de importación es sometido a una exhaustiva inspección mecánica y electrónica en nuestras propias instalaciones antes de su entrega.
+            </p>
+        </div>
+
+        <!-- Expanding Container controlled by GSAP ScrollTrigger -->
+        <div class="w-full flex justify-center items-center px-4 sm:px-8">
+            <div id="expandContainer" class="gpu-accel relative w-full max-w-5xl h-[52vh] sm:h-[68vh] rounded-2xl overflow-hidden gold-border shadow-2xl mx-auto">
+                <img 
+                    id="expandImage"
+                    src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1200&q=75" 
+                    alt="Atelier Mecánico Stefy Cris" 
+                    loading="lazy"
+                    decoding="async"
+                    class="w-full h-full object-cover object-center scale-110 gpu-accel"
+                    onerror="this.src='https://placehold.co/1200x750/0D0D0D/D4AF37?text=ATELIER+STEFY+CRIS'"
+                >
+                <div class="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/40 to-transparent"></div>
+
+                <!-- Minimalist Editorial Caption -->
+                <div class="absolute bottom-0 inset-x-0 p-6 sm:p-12 lg:p-16 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+                    <div id="expandCaption" class="max-w-2xl space-y-2 gpu-accel">
+                        <span class="text-[10px] uppercase tracking-[0.28em] text-gold-400 block">Doble Garantía Exclusiva</span>
+                        <h3 class="font-serif text-2xl sm:text-4xl text-ivory leading-snug">
+                            No solo seleccionamos automóviles extraordinarios. Conocemos cada componente.
+                        </h3>
+                    </div>
+                    <button onclick="openBookingModal('Cita de Taller')" class="btn-gold px-6 py-3.5 rounded-full text-xs uppercase tracking-[0.18em] shrink-0 self-start sm:self-end">
+                        Conocer el Taller
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CURATED CATALOG (NACIONAL & IMPORTACIÓN) ==================== -->
+    <section id="catalogo" class="relative py-24 lg:py-32 bg-obsidian-950">
+        <div class="max-w-7xl mx-auto px-5 sm:px-10">
+            
+            <!-- Clean Section Header -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <span class="text-[11px] uppercase tracking-[0.3em] text-gold-400 block mb-2">Showroom Privado</span>
+                    <h2 class="font-serif font-medium text-3xl sm:text-5xl text-ivory tracking-tight">
+                        Colección Nacional e Importación
+                    </h2>
+                </div>
+                <span id="catalogCountBadge" class="text-xs uppercase tracking-[0.2em] text-warmgray">
+                    Cargando colección...
+                </span>
+            </div>
+
+            <!-- Minimalist Filter & Search Bar -->
+            <div class="luxury-surface rounded-2xl p-4 sm:p-5 mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                    
+                    <!-- Origin Filter Pills -->
+                    <div class="md:col-span-5 flex p-1 rounded-xl bg-obsidian-950 border border-white/5">
+                        <button onclick="setOriginFilter('TODOS')" id="filterBtn-TODOS" class="flex-1 py-2.5 px-3 rounded-lg text-xs uppercase tracking-wider font-medium transition-all btn-gold">
+                            Todos
+                        </button>
+                        <button onclick="setOriginFilter('Nacional')" id="filterBtn-Nacional" class="flex-1 py-2.5 px-3 rounded-lg text-xs uppercase tracking-wider font-medium transition-all text-warmgray hover:text-ivory">
+                            Nacionales
+                        </button>
+                        <button onclick="setOriginFilter('Importación')" id="filterBtn-Importación" class="flex-1 py-2.5 px-3 rounded-lg text-xs uppercase tracking-wider font-medium transition-all text-warmgray hover:text-ivory">
+                            Importación
+                        </button>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="md:col-span-4 relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-warmgray text-xs"></i>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            oninput="renderCatalog()"
+                            placeholder="Buscar marca, modelo o potencia..." 
+                            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory placeholder-warmgray focus:outline-none focus:border-gold-400 transition-colors"
+                        >
+                    </div>
+
+                    <!-- Sort Selector -->
+                    <div class="md:col-span-3">
+                        <select 
+                            id="sortSelect" 
+                            onchange="renderCatalog()"
+                            class="w-full px-4 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:outline-none focus:border-gold-400 transition-colors"
+                        >
+                            <option value="featured">Orden: Destacados</option>
+                            <option value="price-desc">Precio: Mayor a Menor</option>
+                            <option value="price-asc">Precio: Menor a Mayor</option>
+                            <option value="year-desc">Año: Más Recientes</option>
+                            <option value="km-asc">Kilómetros: Menor a Mayor</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Vehicles Grid -->
+            <div id="catalogGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Populated dynamically via JS -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==================== WORKSHOP SERVICES (TALLER DE ALTA GAMA) ==================== -->
+    <section id="taller" class="relative py-24 lg:py-32 bg-obsidian-900/40 border-t border-gold-400/10">
+        <div class="max-w-7xl mx-auto px-5 sm:px-10">
+            
+            <div class="max-w-2xl mb-16">
+                <span class="text-[11px] uppercase tracking-[0.3em] text-gold-400 block mb-2">Excelencia Técnica</span>
+                <h2 class="font-serif font-medium text-3xl sm:text-5xl text-ivory tracking-tight">
+                    Taller de Alta Gama Stefy Cris
+                </h2>
+                <p class="text-warmgray text-sm sm:text-base mt-3 font-light leading-relaxed">
+                    Instalaciones equipadas con diagnosis oficial multimarca, recambios originales OEM y especialistas dedicados al mantenimiento de vehículos deportivos y de lujo.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Service 01 -->
+                <div class="luxury-surface rounded-2xl p-8 sm:p-10 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="font-serif italic text-3xl text-gold-400">01</span>
+                            <span class="text-[10px] uppercase tracking-[0.25em] text-warmgray">Mantenimiento OEM</span>
+                        </div>
+                        <h3 class="font-serif text-2xl sm:text-3xl text-ivory mb-3">
+                            Mecánica de Precisión & Libro Digital
+                        </h3>
+                        <p class="text-warmgray text-sm leading-relaxed font-light mb-6">
+                            Revisiones oficiales selladas en el historial digital del fabricante (Porsche, BMW, Mercedes-AMG, Audi) conservando intacta la garantía oficial. Mantenimiento avanzado de transmisiones PDK, ZF y S-Tronic.
+                        </p>
+                    </div>
+                    <button onclick="openBookingModal('Mantenimiento Oficial')" class="self-start text-xs uppercase tracking-[0.2em] text-gold-300 hover:text-ivory flex items-center gap-2 transition-colors pt-4 border-t border-white/5 w-full">
+                        <span>Solicitar Cita de Mantenimiento</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- Service 02 -->
+                <div class="luxury-surface rounded-2xl p-8 sm:p-10 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="font-serif italic text-3xl text-gold-400">02</span>
+                            <span class="text-[10px] uppercase tracking-[0.25em] text-warmgray">Telemetría & ECU</span>
+                        </div>
+                        <h3 class="font-serif text-2xl sm:text-3xl text-ivory mb-3">
+                            Diagnóstico Electrónico & Certificación
+                        </h3>
+                        <p class="text-warmgray text-sm leading-relaxed font-light mb-6">
+                            Auditoría electrónica completa de unidades de control, verificación real de kilometraje en todos los módulos, calibración de sistemas y optimización electrónica a medida.
+                        </p>
+                    </div>
+                    <button onclick="openBookingModal('Diagnóstico Electrónico')" class="self-start text-xs uppercase tracking-[0.2em] text-gold-300 hover:text-ivory flex items-center gap-2 transition-colors pt-4 border-t border-white/5 w-full">
+                        <span>Reservar Diagnóstico Técnico</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- Service 03 -->
+                <div class="luxury-surface rounded-2xl p-8 sm:p-10 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="font-serif italic text-3xl text-gold-400">03</span>
+                            <span class="text-[10px] uppercase tracking-[0.25em] text-warmgray">Alemania & Europa</span>
+                        </div>
+                        <h3 class="font-serif text-2xl sm:text-3xl text-ivory mb-3">
+                            Importación Personalizada Llave en Mano
+                        </h3>
+                        <p class="text-warmgray text-sm leading-relaxed font-light mb-6">
+                            Localizamos su configuración exacta en concesionarios oficiales europeos. Incluye peritaje mecánico presencial, transporte cerrado asegurado, homologación, matriculación e ITV en España.
+                        </p>
+                    </div>
+                    <button onclick="openBookingModal('Importación a la Carta')" class="self-start text-xs uppercase tracking-[0.2em] text-gold-300 hover:text-ivory flex items-center gap-2 transition-colors pt-4 border-t border-white/5 w-full">
+                        <span>Encargar Vehículo a la Carta</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+                <!-- Service 04 -->
+                <div class="luxury-surface rounded-2xl p-8 sm:p-10 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <span class="font-serif italic text-3xl text-gold-400">04</span>
+                            <span class="text-[10px] uppercase tracking-[0.25em] text-warmgray">Estética & PPF</span>
+                        </div>
+                        <h3 class="font-serif text-2xl sm:text-3xl text-ivory mb-3">
+                            Detailing de Concurso & Protección Cerámica
+                        </h3>
+                        <p class="text-warmgray text-sm leading-relaxed font-light mb-6">
+                            Corrección de pintura en múltiples etapas, aplicación de recubrimiento cerámico de alta dureza, vinilado de protección transparente (PPF) e instalación de líneas de escape deportivas.
+                        </p>
+                    </div>
+                    <button onclick="openBookingModal('Detailing & Preparación')" class="self-start text-xs uppercase tracking-[0.2em] text-gold-300 hover:text-ivory flex items-center gap-2 transition-colors pt-4 border-t border-white/5 w-full">
+                        <span>Consultar Tratamiento Estético</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== IMPORT PROCESS (CLEAN 4 STEPS) ==================== -->
+    <section id="importacion" class="relative py-24 bg-obsidian-950 border-t border-gold-400/10">
+        <div class="max-w-7xl mx-auto px-5 sm:px-10">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-[11px] uppercase tracking-[0.3em] text-gold-400 block mb-2">Protocolo Stefy Cris</span>
+                <h2 class="font-serif font-medium text-3xl sm:text-5xl text-ivory">
+                    Importación Transparente
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="p-6 border-l border-gold-400/30 space-y-2">
+                    <span class="text-xs uppercase tracking-[0.2em] text-gold-400">Fase I</span>
+                    <h3 class="font-serif text-2xl text-ivory">Selección Oficial</h3>
+                    <p class="text-warmgray text-xs leading-relaxed font-light">
+                        Búsqueda exclusiva en red oficial de Alemania con trazabilidad completa y certificado libre de siniestros.
+                    </p>
+                </div>
+                <div class="p-6 border-l border-gold-400/30 space-y-2">
+                    <span class="text-xs uppercase tracking-[0.2em] text-gold-400">Fase II</span>
+                    <h3 class="font-serif text-2xl text-ivory">Peritaje en Origen</h3>
+                    <p class="text-warmgray text-xs leading-relaxed font-light">
+                        Inspección física de pintura, electrónica y prueba dinámica antes de formalizar la adquisición.
+                    </p>
+                </div>
+                <div class="p-6 border-l border-gold-400/30 space-y-2">
+                    <span class="text-xs uppercase tracking-[0.2em] text-gold-400">Fase III</span>
+                    <h3 class="font-serif text-2xl text-ivory">Revisión en Taller</h3>
+                    <p class="text-warmgray text-xs leading-relaxed font-light">
+                        Traslado asegurado a nuestro taller en España para mantenimiento preventivo y preparación estética.
+                    </p>
+                </div>
+                <div class="p-6 border-l border-gold-400/30 space-y-2">
+                    <span class="text-xs uppercase tracking-[0.2em] text-gold-400">Fase IV</span>
+                    <h3 class="font-serif text-2xl text-ivory">Matriculación & Entrega</h3>
+                    <p class="text-warmgray text-xs leading-relaxed font-light">
+                        ITV, impuestos liquidados, matrícula española definitiva y hasta 24 meses de garantía propia.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER WITH DISCREET ADMIN ACCESS ==================== -->
+    <footer class="bg-obsidian-900 border-t border-gold-400/15 pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-5 sm:px-10">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/5">
+                
+                <div class="md:col-span-6 space-y-4">
+                    <!-- Double-clicking the footer brand also opens Admin -->
+                    <div ondblclick="handleAdminAccessClick()" class="inline-flex items-center gap-3 cursor-pointer select-none" title="Stefy Cris">
+                        <div class="w-8 h-8 rounded-full border border-gold-400/50 flex items-center justify-center">
+                            <span class="font-serif text-gold-400 text-sm">SC</span>
+                        </div>
+                        <span class="font-serif text-xl tracking-[0.2em] text-ivory">STEFY CRIS</span>
+                    </div>
+                    <p class="text-warmgray text-xs sm:text-sm max-w-sm leading-relaxed font-light">
+                        Atelier electromecánico de alta gama y concesionario especializado en vehículos nacionales y de importación europea.
+                    </p>
+                </div>
+
+                <div class="md:col-span-3 space-y-3">
+                    <h4 class="text-[11px] uppercase tracking-[0.25em] text-gold-400">Secciones</h4>
+                    <ul class="space-y-2 text-xs text-warmgray">
+                        <li><a href="#catalogo" class="hover:text-ivory transition-colors">Colección Disponible</a></li>
+                        <li><a href="#taller" class="hover:text-ivory transition-colors">Taller de Alta Gama</a></li>
+                        <li><a href="#importacion" class="hover:text-ivory transition-colors">Importación a la Carta</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-3 space-y-3">
+                    <h4 class="text-[11px] uppercase tracking-[0.25em] text-gold-400">Contacto Directo</h4>
+                    <ul class="space-y-2 text-xs text-warmgray font-light">
+                        <li>Pol. Ind. Automoción, Nave 12</li>
+                        <li>+34 900 88 99 11</li>
+                        <li>atelier@stefycris.com</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Discreet Copyright & Hidden Lock Trigger -->
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-warmgray/60 gap-4">
+                <div class="flex items-center gap-2">
+                    <span>© 2026 STEFY CRIS MOTORSPORT S.L. Todos los derechos reservados.</span>
+                    <!-- Subtle, non-intrusive lock icon for Admin access -->
+                    <button 
+                        onclick="handleAdminAccessClick()" 
+                        class="opacity-25 hover:opacity-90 hover:text-gold-400 transition-opacity p-1 focus:outline-none" 
+                        aria-label="Gestión Interna"
+                        title="Gestión Interna (Alt + A)"
+                    >
+                        <i class="fa-solid fa-lock text-[10px]"></i>
+                    </button>
+                </div>
+                <span class="tracking-widest uppercase text-[10px]">Nacional · Importación · Taller</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== MODAL 1: DISCREET ADMIN LOGIN ==================== -->
+    <div id="loginModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4 bg-black/85">
+        <div class="luxury-surface rounded-2xl max-w-md w-full p-8 relative shadow-2xl">
+            <button onclick="closeLoginModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-warmgray hover:text-ivory">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+
+            <span class="text-[10px] uppercase tracking-[0.28em] text-gold-400 block mb-1">Acceso Privado</span>
+            <h3 class="font-serif text-3xl text-ivory mb-2">Dirección Stefy Cris</h3>
+            <p class="text-xs text-warmgray font-light mb-6">
+                Identifíquese para gestionar el inventario de vehículos nacionales y de importación.
+            </p>
+
+            <form id="loginForm" onsubmit="submitAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1.5">Usuario</label>
+                    <input 
+                        type="text" 
+                        id="adminUsername" 
+                        required
+                        placeholder="Usuario"
+                        class="w-full px-4 py-3 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:outline-none focus:border-gold-400"
+                    >
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1.5">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="adminPassword" 
+                        required
+                        placeholder="••••••••••••"
+                        class="w-full px-4 py-3 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:outline-none focus:border-gold-400"
+                    >
+                </div>
+
+                <div class="flex items-center justify-between pt-1">
+                    <button type="button" onclick="fillDemoCredentials()" class="text-[11px] text-gold-400/80 hover:text-gold-300 underline">
+                        Autocompletar credenciales de prueba
+                    </button>
+                </div>
+
+                <div id="loginErrorMsg" class="hidden text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-xl p-3">
+                    Credenciales incorrectas.
+                </div>
+
+                <button type="submit" class="btn-gold w-full py-3.5 rounded-full text-xs uppercase tracking-[0.2em] mt-2">
+                    Entrar al Panel
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 2: ADMIN INVENTORY MANAGER (CRUD) ==================== -->
+    <div id="adminDashboardModal" class="fixed inset-0 z-[85] hidden overflow-y-auto bg-black/90 p-3 sm:p-6 lg:p-10">
+        <div class="max-w-6xl mx-auto luxury-surface rounded-2xl overflow-hidden my-auto shadow-2xl">
+            
+            <!-- Dashboard Header -->
+            <div class="px-6 py-5 bg-obsidian-950 border-b border-gold-400/20 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <span class="text-[10px] uppercase tracking-[0.25em] text-gold-400 block">Gestión de Catálogo</span>
+                    <h3 class="font-serif text-2xl text-ivory">Panel de Administración — Stefy Cris</h3>
+                </div>
+                <div class="flex items-center gap-2.5">
+                    <button onclick="openCodeExportModal()" class="px-3.5 py-2 rounded-full border border-gold-400/30 text-xs text-gold-300 hover:bg-gold-400/10 transition-colors">
+                        <i class="fa-solid fa-code mr-1"></i> Ver 3 Archivos (HTML/CSS/JS)
+                    </button>
+                    <button onclick="resetDefaultCatalog()" class="px-3.5 py-2 rounded-full border border-white/10 text-xs text-warmgray hover:text-ivory transition-colors">
+                        Restaurar Demo
+                    </button>
+                    <button onclick="closeAdminDashboard()" class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-ivory hover:border-gold-400">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-white/10">
+                
+                <!-- Left: Add / Edit Vehicle Form -->
+                <div class="lg:col-span-6 p-6 sm:p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h4 id="adminFormTitle" class="font-serif text-2xl text-ivory">
+                            Publicar Nuevo Vehículo
+                        </h4>
+                        <button type="button" id="cancelEditBtn" onclick="resetAdminForm()" class="hidden text-xs text-gold-400 underline">
+                            Cancelar edición
+                        </button>
+                    </div>
+
+                    <form id="vehicleAdminForm" onsubmit="handleSaveVehicle(event)" class="space-y-4">
+                        <input type="hidden" id="carIdInput" value="">
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Marca *</label>
+                                <input type="text" id="carBrand" required placeholder="Ej: Porsche, BMW..." class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Modelo y Versión *</label>
+                                <input type="text" id="carTitle" required placeholder="Ej: 911 Carrera S (992)" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Origen *</label>
+                                <select id="carOrigin" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                                    <option value="Nacional">Nacional</option>
+                                    <option value="Importación">Importación</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Ciudad / País</label>
+                                <input type="text" id="carCountry" placeholder="Stuttgart / Madrid" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Precio (€) *</label>
+                                <input type="number" id="carPrice" required min="1000" step="100" placeholder="115000" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Año *</label>
+                                <input type="number" id="carYear" required min="1990" max="2027" placeholder="2024" class="w-full px-3 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Kilómetros *</label>
+                                <input type="number" id="carKm" required min="0" placeholder="12000" class="w-full px-3 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Potencia (CV)*</label>
+                                <input type="number" id="carHp" required min="50" placeholder="510" class="w-full px-3 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Combustible</label>
+                                <select id="carFuel" class="w-full px-3 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                                    <option value="Gasolina">Gasolina</option>
+                                    <option value="Híbrido PHEV">Híbrido PHEV</option>
+                                    <option value="Diésel">Diésel</option>
+                                    <option value="Eléctrico">Eléctrico</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Image Selector -->
+                        <div class="p-4 rounded-xl bg-obsidian-950 border border-white/10 space-y-3">
+                            <label class="block text-[10px] uppercase tracking-widest text-gold-400">Imagen del Vehículo (URL o Subir Archivo)</label>
+                            <input 
+                                type="url" 
+                                id="carImageUrl" 
+                                oninput="updateAdminImagePreview(this.value)"
+                                placeholder="https://images.unsplash.com/..." 
+                                class="w-full px-3.5 py-2 rounded-lg bg-obsidian-900 border border-white/10 text-xs text-ivory focus:border-gold-400 focus:outline-none"
+                            >
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <label class="cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-gold-400/30 text-xs text-gold-200 hover:bg-gold-400/10 transition-colors">
+                                    <i class="fa-solid fa-upload text-gold-400"></i>
+                                    <span>Subir desde dispositivo</span>
+                                    <input type="file" id="carImageFile" accept="image/*" onchange="handleLocalImageUpload(event)" class="hidden">
+                                </label>
+                                <div class="flex items-center gap-1.5">
+                                    <button type="button" onclick="setPresetImage('https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=75')" class="px-2.5 py-1 rounded border border-white/10 text-[10px] text-warmgray hover:text-ivory">Preset BMW</button>
+                                    <button type="button" onclick="setPresetImage('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=800&q=75')" class="px-2.5 py-1 rounded border border-white/10 text-[10px] text-warmgray hover:text-ivory">Preset AMG</button>
+                                </div>
+                            </div>
+                            <div id="adminImgPreviewWrap" class="hidden relative h-32 rounded-lg overflow-hidden border border-gold-400/30">
+                                <img id="adminImgPreview" src="" alt="Vista previa" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Descripción e Historial *</label>
+                            <textarea 
+                                id="carDescription" 
+                                required 
+                                rows="3" 
+                                placeholder="Detalles de equipamiento, procedencia y revisión realizada en Taller Stefy Cris..."
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none"
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" id="adminSubmitBtn" class="btn-gold w-full py-3.5 rounded-full text-xs uppercase tracking-[0.2em]">
+                            Guardar y Publicar Anuncio
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right: Active Inventory List -->
+                <div class="lg:col-span-6 p-6 sm:p-8 flex flex-col justify-between bg-obsidian-950/50">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <h4 class="font-serif text-2xl text-ivory">Inventario Activo</h4>
+                            <span id="adminTotalCount" class="text-xs uppercase tracking-widest text-gold-400">0 vehículos</span>
+                        </div>
+                        <div id="adminInventoryList" class="space-y-3 max-h-[500px] overflow-y-auto pr-1"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 3: VEHICLE TECHNICAL SHEET & CALCULATOR ==================== -->
+    <div id="vehicleDetailModal" class="fixed inset-0 z-[80] hidden overflow-y-auto bg-black/85 p-3 sm:p-6">
+        <div class="max-w-5xl mx-auto luxury-surface rounded-2xl overflow-hidden my-6 relative shadow-2xl">
+            <button onclick="closeVehicleDetailModal()" class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-obsidian-950/80 border border-gold-400/30 text-ivory hover:text-gold-400 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="vehicleDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 4: WORKSHOP & IMPORT BOOKING ==================== -->
+    <div id="bookingModal" class="fixed inset-0 z-[80] hidden items-center justify-center p-4 bg-black/85">
+        <div class="luxury-surface rounded-2xl max-w-lg w-full p-7 sm:p-9 relative shadow-2xl">
+            <button onclick="closeBookingModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-warmgray hover:text-ivory">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+
+            <span class="text-[10px] uppercase tracking-[0.28em] text-gold-400 block mb-1">Concierge & Taller</span>
+            <h3 class="font-serif text-3xl text-ivory mb-2">Solicitud de Cita Previa</h3>
+            <p class="text-xs text-warmgray font-light mb-6">
+                Un asesor de Stefy Cris se pondrá en contacto con usted para confirmar su cita de taller o estudio de importación.
+            </p>
+
+            <form onsubmit="submitBookingForm(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Nombre *</label>
+                        <input type="text" id="bookName" required placeholder="Su nombre" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Teléfono *</label>
+                        <input type="tel" id="bookPhone" required placeholder="+34 600 000 000" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Servicio</label>
+                        <select id="bookService" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                            <option value="Cita de Taller">Taller: Mantenimiento Oficial</option>
+                            <option value="Mantenimiento Oficial">Taller: Mecánica & Revisión</option>
+                            <option value="Diagnóstico Electrónico">Taller: Diagnóstico Electrónico</option>
+                            <option value="Importación a la Carta">Importación a la Carta</option>
+                            <option value="Reserva de Vehículo en Stock">Interés en Vehículo en Stock</option>
+                            <option value="Detailing & Preparación">Detailing & Protección Cerámica</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Vehículo</label>
+                        <input type="text" id="bookCarModel" placeholder="Modelo o matrícula" class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest text-warmgray mb-1">Observaciones</label>
+                    <textarea id="bookNotes" rows="2" placeholder="Indíquenos fecha preferida o consulta..." class="w-full px-3.5 py-2.5 rounded-xl bg-obsidian-950 border border-white/10 text-sm text-ivory focus:border-gold-400 focus:outline-none"></textarea>
+                </div>
+
+                <button type="submit" class="btn-gold w-full py-3.5 rounded-full text-xs uppercase tracking-[0.2em]">
+                    Confirmar Solicitud
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 5: SEPARATED FILES EXPORT (HTML / CSS / JS) ==================== -->
+    <div id="codeExportModal" class="fixed inset-0 z-[90] hidden items-center justify-center p-4 bg-black/90">
+        <div class="luxury-surface rounded-2xl max-w-3xl w-full p-6 sm:p-8 relative shadow-2xl">
+            <button onclick="closeCodeExportModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-warmgray hover:text-ivory">
+                <i class="fa-solid fa-xmark text-xs"></i>
+            </button>
+            <span class="text-[10px] uppercase tracking-[0.28em] text-gold-400 block mb-1">Estructura de Producción</span>
+            <h3 class="font-serif text-2xl sm:text-3xl text-ivory mb-4">Exportar Código en Archivos Separados</h3>
+            <p class="text-xs text-warmgray mb-5">
+                Copia directamente cada bloque si deseas alojar tu proyecto dividido en <code class="text-gold-300">index.html</code>, <code class="text-gold-300">styles.css</code> y <code class="text-gold-300">app.js</code>.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <button onclick="copySeparatedFile('html')" class="btn-gold-outline py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-html5 text-gold-400"></i> Copiar index.html
+                </button>
+                <button onclick="copySeparatedFile('css')" class="btn-gold-outline py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-css3-alt text-gold-400"></i> Copiar styles.css
+                </button>
+                <button onclick="copySeparatedFile('js')" class="btn-gold-outline py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-js text-gold-400"></i> Copiar app.js
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== APPLICATION JAVASCRIPT ==================== -->
+    <script>
+        /* ==========================================================================
+           1. OPTIMIZED DATASET (LIGHTWEIGHT IMAGES FOR INSTANT MOBILE LOAD)
+           ========================================================================== */
+        const STORAGE_KEY_CARS = 'stefy_cris_luxury_v2';
+        const STORAGE_KEY_ADMIN = 'stefy_cris_admin_logged_in';
+
+        const DEFAULT_VEHICLES = [
+            {
+                id: 'sc-101',
+                brand: 'Porsche',
+                title: '911 Carrera S (992) PDK Sport Chrono',
+                origin: 'Importación',
+                country: 'Stuttgart, Alemania',
+                price: 134900,
+                year: 2023,
+                km: 14200,
+                hp: 450,
+                fuel: 'Gasolina',
+                transmission: 'PDK 8v',
+                image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=800&q=75',
+                description: 'Importado de Centro Oficial Porsche Stuttgart. Paquete Sport Chrono, escape deportivo PSE, eje trasero direccional y asientos deportivos Plus en cuero. Auditoría de 150 puntos realizada en Taller Stefy Cris.'
+            },
+            {
+                id: 'sc-102',
+                brand: 'BMW',
+                title: 'M3 Competition M xDrive Touring',
+                origin: 'Importación',
+                country: 'Múnich, Alemania',
+                price: 108500,
+                year: 2024,
+                km: 9800,
+                hp: 510,
+                fuel: 'Gasolina',
+                transmission: 'M Steptronic 8v',
+                image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=75',
+                description: 'Procedente de concesionario oficial BMW Múnich. Paquete exterior M Carbon, asientos baquet de carbono y sonido Harman Kardon. Kilometraje certificado en nuestro taller.'
+            },
+            {
+                id: 'sc-103',
+                brand: 'Audi',
+                title: 'RS6 Avant Performance Quattro',
+                origin: 'Nacional',
+                country: 'Madrid, España',
+                price: 142000,
+                year: 2023,
+                km: 21500,
+                hp: 630,
+                fuel: 'Gasolina',
+                transmission: 'Tiptronic 8v',
+                image: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=800&q=75',
+                description: 'Unidad Nacional de único propietario con historial oficial completo. Motor V8 4.0 TFSI biturbo de 630 CV, diferencial deportivo quattro y tratamiento cerámico integral Stefy Cris.'
+            },
+            {
+                id: 'sc-104',
+                brand: 'Mercedes-AMG',
+                title: 'GT 63 S 4MATIC+ Coupé',
+                origin: 'Importación',
+                country: 'Frankfurt, Alemania',
+                price: 126800,
+                year: 2022,
+                km: 29400,
+                hp: 639,
+                fuel: 'Gasolina',
+                transmission: 'AMG Speedshift 9G',
+                image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=75',
+                description: 'Unidad seleccionada en Alemania. Paquete aerodinámico AMG, eje trasero direccional, interior en cuero Napa exclusivo y sonido Burmester 3D. Mantenimiento recién completado.'
+            },
+            {
+                id: 'sc-105',
+                brand: 'Cupra',
+                title: 'Formentor VZ5 2.5 TSI Edición Limitada',
+                origin: 'Nacional',
+                country: 'Barcelona, España',
+                price: 56900,
+                year: 2023,
+                km: 16900,
+                hp: 390,
+                fuel: 'Gasolina',
+                transmission: 'DSG 7v',
+                image: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=800&q=75',
+                description: 'Edición Nacional numerada con motor 5 cilindros 2.5 TSI de 390 CV, frenos Akebono de 6 pistones y asientos CupBucket. Incluye 24 meses de garantía en Taller Stefy Cris.'
+            },
+            {
+                id: 'sc-106',
+                brand: 'Volkswagen',
+                title: 'Golf R 20 Anniversary 4Motion',
+                origin: 'Nacional',
+                country: 'Valencia, España',
+                price: 49500,
+                year: 2023,
+                km: 19300,
+                hp: 333,
+                fuel: 'Gasolina',
+                transmission: 'DSG 7v',
+                image: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=75',
+                description: 'Vehículo Nacional edición 20 Aniversario. Paquete R-Performance, escape Akrapovič de titanio e inserciones en fibra de carbono real.'
+            }
+        ];
+
+        let vehicles = [];
+        let currentOriginFilter = 'TODOS';
+        let isAdminAuthenticated = false;
+        let uploadedImageDataUrl = '';
+        let activeDetailCar = null;
+        const isDesktopPointer = window.matchMedia('(pointer: fine)').matches;
+
+        /* ==========================================================================
+           2. FAST INITIALIZATION & KEYBOARD SHORTCUT (ALT + A)
+           ========================================================================== */
+        window.addEventListener('DOMContentLoaded', () => {
+            loadVehiclesFromStorage();
+            checkAdminSession();
+            renderCatalog();
+
+            // Only attach mouse parallax on fine-pointer desktop devices for 60fps mobile speed
+            if (isDesktopPointer) {
+                initDesktopParallax();
+            }
+
+            // Initialize GSAP when script is ready
+            if (typeof gsap !== 'undefined') {
+                initGSAPAnimations();
+            } else {
+                window.addEventListener('load', initGSAPAnimations);
+            }
+
+            // Discreet keyboard shortcut (Alt + A) for Admin
+            window.addEventListener('keydown', (e) => {
+                if (e.altKey && e.key.toLowerCase() === 'a') {
+                    e.preventDefault();
+                    handleAdminAccessClick();
+                }
+            });
+        });
+
+        function loadVehiclesFromStorage() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_CARS);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        vehicles = parsed;
+                        return;
+                    }
+                }
+            } catch (e) {}
+            vehicles = [...DEFAULT_VEHICLES];
+            saveVehiclesToStorage();
+        }
+
+        function saveVehiclesToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY_CARS, JSON.stringify(vehicles));
+            } catch (e) {
+                showToast('Imagen guardada en sesión actual.');
+            }
+        }
+
+        function checkAdminSession() {
+            try {
+                isAdminAuthenticated = localStorage.getItem(STORAGE_KEY_ADMIN) === 'true';
+            } catch (e) {
+                isAdminAuthenticated = false;
+            }
+            updateAdminUIState();
+        }
+
+        function updateAdminUIState() {
+            const floatingBar = document.getElementById('floatingAdminBar');
+            if (!floatingBar) return;
+            if (isAdminAuthenticated) {
+                floatingBar.classList.remove('hidden');
+                floatingBar.classList.add('flex');
+            } else {
+                floatingBar.classList.add('hidden');
+                floatingBar.classList.remove('flex');
+            }
+        }
+
+        /* ==========================================================================
+           3. DESKTOP-ONLY 3D CURSOR PARALLAX (SKIPPED ON MOBILE)
+           ========================================================================== */
+        function initDesktopParallax() {
+            const hero3DCard = document.getElementById('hero3DCard');
+            const heroCarImage = document.getElementById('heroCarImage');
+            let ticking = false;
+
+            window.addEventListener('mousemove', (e) => {
+                if (ticking) return;
+                ticking = true;
+
+                requestAnimationFrame(() => {
+                    document.documentElement.style.setProperty('--cursor-x', `${e.clientX}px`);
+                    document.documentElement.style.setProperty('--cursor-y', `${e.clientY}px`);
+
+                    if (typeof gsap !== 'undefined' && hero3DCard && heroCarImage) {
+                        const normX = (e.clientX / window.innerWidth) - 0.5;
+                        const normY = (e.clientY / window.innerHeight) - 0.5;
+
+                        gsap.to(hero3DCard, {
+                            rotateY: normX * 10,
+                            rotateX: -normY * 9,
+                            duration: 0.7,
+                            ease: 'power2.out',
+                            overwrite: 'auto'
+                        });
+
+                        gsap.to(heroCarImage, {
+                            x: -normX * 16,
+                            y: -normY * 12,
+                            duration: 0.8,
+                            ease: 'power2.out',
+                            overwrite: 'auto'
+                        });
+                    }
+                    ticking = false;
+                });
+            }, { passive: true });
+        }
+
+        /* ==========================================================================
+           4. GPU-OPTIMIZED GSAP & SCROLLTRIGGER ANIMATIONS
+           ========================================================================== */
+        function initGSAPAnimations() {
+            if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Smooth Hero Fade-In
+            gsap.from('#heroContent > *', {
+                y: 24,
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: 'power2.out'
+            });
+
+            // ScrollTrigger Image Expansion using GPU-friendly scale & opacity
+            const expandContainer = document.getElementById('expandContainer');
+            const expandImage = document.getElementById('expandImage');
+            const expandCaption = document.getElementById('expandCaption');
+
+            if (expandContainer && expandImage) {
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: '#experiencia-3d',
+                        start: 'top 80%',
+                        end: 'bottom 40%',
+                        scrub: 0.8
+                    }
+                });
+
+                tl.fromTo(expandContainer,
+                    { scale: 0.88 },
+                    { scale: 1, ease: 'none' },
+                    0
+                );
+
+                tl.fromTo(expandImage,
+                    { scale: 1.18 },
+                    { scale: 1.0, ease: 'none' },
+                    0
+                );
+
+                tl.fromTo(expandCaption,
+                    { y: 20, opacity: 0.6 },
+                    { y: 0, opacity: 1, ease: 'none' },
+                    0
+                );
+            }
+        }
+
+        /* ==========================================================================
+           5. CATALOG RENDERING & FILTERING
+           ========================================================================== */
+        function setOriginFilter(origin) {
+            currentOriginFilter = origin;
+            ['TODOS', 'Nacional', 'Importación'].forEach(tab => {
+                const btn = document.getElementById(`filterBtn-${tab}`);
+                if (!btn) return;
+                if (tab === origin) {
+                    btn.className = 'flex-1 py-2.5 px-3 rounded-lg text-xs uppercase tracking-wider font-medium transition-all btn-gold';
+                } else {
+                    btn.className = 'flex-1 py-2.5 px-3 rounded-lg text-xs uppercase tracking-wider font-medium transition-all text-warmgray hover:text-ivory';
+                }
+            });
+            renderCatalog();
+        }
+
+        function formatCurrency(num) {
+            return new Intl.NumberFormat('es-ES', {
+                style: 'currency',
+                currency: 'EUR',
+                maximumFractionDigits: 0
+            }).format(num);
+        }
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat('es-ES').format(num);
+        }
+
+        function renderCatalog() {
+            const grid = document.getElementById('catalogGrid');
+            const searchQuery = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+            const sortBy = document.getElementById('sortSelect')?.value || 'featured';
+            const countBadge = document.getElementById('catalogCountBadge');
+
+            let filtered = vehicles.filter(car => {
+                const matchesOrigin = currentOriginFilter === 'TODOS' || car.origin === currentOriginFilter;
+                const matchesSearch = !searchQuery || 
+                    car.brand.toLowerCase().includes(searchQuery) ||
+                    car.title.toLowerCase().includes(searchQuery) ||
+                    String(car.hp).includes(searchQuery);
+                return matchesOrigin && matchesSearch;
+            });
+
+            if (sortBy === 'price-desc') filtered.sort((a, b) => b.price - a.price);
+            if (sortBy === 'price-asc') filtered.sort((a, b) => a.price - b.price);
+            if (sortBy === 'year-desc') filtered.sort((a, b) => b.year - a.year);
+            if (sortBy === 'km-asc') filtered.sort((a, b) => a.km - b.km);
+
+            if (countBadge) {
+                countBadge.textContent = `${filtered.length} ${filtered.length === 1 ? 'Automóvil en Stock' : 'Automóviles en Stock'}`;
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full luxury-surface rounded-2xl p-12 text-center">
+                        <h3 class="font-serif text-2xl text-ivory mb-2">Sin resultados con estos criterios</h3>
+                        <p class="text-warmgray text-xs mb-6">Podemos importar la unidad exacta que busca desde concesionario oficial en Alemania.</p>
+                        <button onclick="setOriginFilter('TODOS'); document.getElementById('searchInput').value=''; renderCatalog();" class="btn-gold px-6 py-2.5 rounded-full text-xs uppercase tracking-widest">
+                            Restablecer Filtros
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(car => {
+                const monthlyEst = Math.round((car.price * 0.8) / 72 * 1.16);
+
+                return `
+                    <article class="luxury-surface rounded-2xl overflow-hidden flex flex-col justify-between group cursor-pointer" onclick="openVehicleDetailModal('${car.id}')">
+                        <div>
+                            <!-- Optimized Lazy Image Container -->
+                            <div class="relative aspect-[16/10] overflow-hidden bg-obsidian-950">
+                                <img 
+                                    src="${car.image}" 
+                                    alt="${car.brand} ${car.title}" 
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                                    onerror="this.src='https://placehold.co/800x500/0D0D0D/D4AF37?text=${encodeURIComponent(car.brand)}'"
+                                >
+                                <div class="absolute inset-0 bg-gradient-to-t from-obsidian-900 via-transparent to-transparent"></div>
+
+                                <!-- Minimalist Gold Badge -->
+                                <div class="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between">
+                                    <span class="px-3 py-1 rounded-full bg-obsidian-950/90 gold-border text-[10px] uppercase tracking-[0.2em] text-gold-300">
+                                        ${car.origin}
+                                    </span>
+                                    <span class="px-2.5 py-1 rounded-full bg-obsidian-950/90 border border-white/10 text-[11px] text-ivory">
+                                        ${car.year}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Airy Card Content -->
+                            <div class="p-6">
+                                <span class="text-[10px] uppercase tracking-[0.25em] text-gold-400 block mb-1">${car.brand}</span>
+                                <h3 class="font-serif text-2xl text-ivory group-hover:text-gold-300 transition-colors line-clamp-1 mb-4">
+                                    ${car.title}
+                                </h3>
+
+                                <!-- Clean Technical Row -->
+                                <div class="flex items-center justify-between py-3 border-y border-white/5 text-xs text-warmgray mb-4">
+                                    <span>${formatNumber(car.km)} km</span>
+                                    <span class="text-gold-400/40">·</span>
+                                    <span>${car.hp} CV</span>
+                                    <span class="text-gold-400/40">·</span>
+                                    <span>${car.fuel}</span>
+                                </div>
+
+                                <p class="text-xs text-warmgray font-light line-clamp-2 leading-relaxed">
+                                    ${car.description}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer -->
+                        <div class="px-6 pb-6 pt-2 flex items-end justify-between">
+                            <div>
+                                <span class="font-serif text-2xl sm:text-3xl text-ivory block leading-none">${formatCurrency(car.price)}</span>
+                                <span class="text-[10px] text-warmgray mt-1 block">Desde ~${monthlyEst} €/mes</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${isAdminAuthenticated ? `
+                                    <button onclick="event.stopPropagation(); openAdminDashboardAndEdit('${car.id}')" class="w-8 h-8 rounded-full border border-gold-400/40 text-gold-300 hover:bg-gold-400 hover:text-obsidian-950 flex items-center justify-center transition-colors" title="Editar">
+                                        <i class="fa-solid fa-pen text-[10px]"></i>
+                                    </button>
+                                ` : ''}
+                                <span class="text-[11px] uppercase tracking-[0.2em] text-gold-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1.5">
+                                    <span>Explorar</span>
+                                    <i class="fa-solid fa-arrow-right text-[9px]"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        /* ==========================================================================
+           6. VEHICLE TECHNICAL SHEET & FINANCING CALCULATOR
+           ========================================================================== */
+        function openVehicleDetailModal(carId) {
+            const car = vehicles.find(c => c.id === carId);
+            if (!car) return;
+            activeDetailCar = car;
+
+            const modal = document.getElementById('vehicleDetailModal');
+            const container = document.getElementById('vehicleDetailContent');
+            const defaultDownPayment = Math.round(car.price * 0.25);
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-12">
+                    <div class="lg:col-span-7 bg-obsidian-950 flex flex-col justify-between">
+                        <div class="relative aspect-[16/10] w-full overflow-hidden">
+                            <img src="${car.image}" alt="${car.title}" class="w-full h-full object-cover">
+                            <div class="absolute top-4 left-4">
+                                <span class="px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-[0.2em] bg-obsidian-950/90 gold-border text-gold-300">
+                                    ${car.origin} · ${car.country || 'Certificado'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="p-6 sm:p-9 space-y-6">
+                            <div>
+                                <span class="text-[10px] uppercase tracking-[0.28em] text-gold-400">${car.brand}</span>
+                                <h2 class="font-serif text-3xl sm:text-4xl text-ivory mt-1">${car.title}</h2>
+                            </div>
+
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div class="p-3.5 rounded-xl bg-obsidian-900 gold-border-subtle">
+                                    <span class="text-[9px] uppercase tracking-widest text-warmgray block">Año</span>
+                                    <span class="text-sm font-medium text-ivory mt-0.5 block">${car.year}</span>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-obsidian-900 gold-border-subtle">
+                                    <span class="text-[9px] uppercase tracking-widest text-warmgray block">Kilometraje</span>
+                                    <span class="text-sm font-medium text-ivory mt-0.5 block">${formatNumber(car.km)} km</span>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-obsidian-900 gold-border-subtle">
+                                    <span class="text-[9px] uppercase tracking-widest text-warmgray block">Potencia</span>
+                                    <span class="text-sm font-medium text-gold-300 mt-0.5 block">${car.hp} CV</span>
+                                </div>
+                                <div class="p-3.5 rounded-xl bg-obsidian-900 gold-border-subtle">
+                                    <span class="text-[9px] uppercase tracking-widest text-warmgray block">Motor</span>
+                                    <span class="text-sm font-medium text-ivory mt-0.5 block">${car.fuel}</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-[10px] uppercase tracking-[0.25em] text-gold-400 mb-2">Informe Stefy Cris</h4>
+                                <p class="text-warmgray text-sm font-light leading-relaxed">${car.description}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 p-6 sm:p-9 bg-obsidian-900 border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col justify-between space-y-6">
+                        <div class="space-y-6">
+                            <div class="pb-5 border-b border-white/10">
+                                <span class="text-[10px] uppercase tracking-[0.25em] text-warmgray block">Precio al Contado</span>
+                                <div class="font-serif text-4xl sm:text-5xl text-ivory mt-1">${formatCurrency(car.price)}</div>
+                                <span class="text-[11px] text-gold-400 mt-2 block">
+                                    ✓ Revisión integral en Taller Stefy Cris y garantía incluida
+                                </span>
+                            </div>
+
+                            <!-- Financing Simulator -->
+                            <div class="p-5 rounded-xl bg-obsidian-950 gold-border-subtle space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] uppercase tracking-[0.2em] text-gold-300">Simulador de Financiación</span>
+                                    <span class="text-[10px] text-warmgray">TIN 5,99%</span>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1.5">
+                                        <span class="text-warmgray">Entrada inicial</span>
+                                        <span id="calcDownLabel" class="text-ivory font-medium">${formatCurrency(defaultDownPayment)}</span>
+                                    </div>
+                                    <input type="range" id="calcDownInput" min="0" max="${Math.round(car.price * 0.7)}" step="1000" value="${defaultDownPayment}" oninput="updateFinanceCalc()" class="w-full">
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1.5">
+                                        <span class="text-warmgray">Plazo</span>
+                                        <span id="calcMonthsLabel" class="text-ivory font-medium">60 meses</span>
+                                    </div>
+                                    <input type="range" id="calcMonthsInput" min="24" max="96" step="12" value="60" oninput="updateFinanceCalc()" class="w-full">
+                                </div>
+
+                                <div class="pt-3 border-t border-white/10 flex items-baseline justify-between">
+                                    <span class="text-xs text-warmgray">Cuota mensual:</span>
+                                    <span id="calcMonthlyResult" class="font-serif text-3xl text-gold-300">-- €/mes</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 pt-4">
+                            <button onclick="closeVehicleDetailModal(); openBookingModal('Reserva de Vehículo en Stock', '${car.brand} ${car.title}')" class="btn-gold w-full py-4 rounded-full text-xs uppercase tracking-[0.2em]">
+                                Solicitar Cita Privada / Reserva
+                            </button>
+                            <button onclick="closeVehicleDetailModal(); openBookingModal('Cita de Taller', 'Revisión en elevador: ${car.brand} ${car.title}')" class="btn-gold-outline w-full py-3.5 rounded-full text-xs uppercase tracking-[0.18em]">
+                                Inspeccionar en Elevador Stefy Cris
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            updateFinanceCalc();
+        }
+
+        function updateFinanceCalc() {
+            if (!activeDetailCar) return;
+            const down = Number(document.getElementById('calcDownInput')?.value || 0);
+            const months = Number(document.getElementById('calcMonthsInput')?.value || 60);
+
+            document.getElementById('calcDownLabel').textContent = formatCurrency(down);
+            document.getElementById('calcMonthsLabel').textContent = `${months} meses`;
+
+            const principal = Math.max(0, activeDetailCar.price - down);
+            const monthlyRate = 0.0599 / 12;
+            const monthlyPayment = principal > 0
+                ? (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months))
+                : 0;
+
+            document.getElementById('calcMonthlyResult').textContent = `${Math.round(monthlyPayment)} €/mes`;
+        }
+
+        function closeVehicleDetailModal() {
+            const modal = document.getElementById('vehicleDetailModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        /* ==========================================================================
+           7. DISCREET ADMIN AUTHENTICATION & CRUD
+           ========================================================================== */
+        function handleAdminAccessClick() {
+            if (isAdminAuthenticated) {
+                openAdminDashboard();
+            } else {
+                openLoginModal();
+            }
+        }
+
+        function openLoginModal() {
+            document.getElementById('loginErrorMsg').classList.add('hidden');
+            const modal = document.getElementById('loginModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function fillDemoCredentials() {
+            document.getElementById('adminUsername').value = 'admin';
+            document.getElementById('adminPassword').value = 'stefycris2026';
+            document.getElementById('loginErrorMsg').classList.add('hidden');
+        }
+
+        function submitAdminLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUsername').value.trim();
+            const pass = document.getElementById('adminPassword').value.trim();
+
+            if (user === 'admin' && pass === 'stefycris2026') {
+                isAdminAuthenticated = true;
+                try {
+                    localStorage.setItem(STORAGE_KEY_ADMIN, 'true');
+                } catch (err) {}
+                updateAdminUIState();
+                renderCatalog();
+                closeLoginModal();
+                openAdminDashboard();
+                showToast('Sesión de dirección iniciada.');
+            } else {
+                document.getElementById('loginErrorMsg').classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminAuthenticated = false;
+            try {
+                localStorage.removeItem(STORAGE_KEY_ADMIN);
+            } catch (err) {}
+            updateAdminUIState();
+            renderCatalog();
+            closeAdminDashboard();
+            showToast('Sesión de administrador finalizada.');
+        }
+
+        function openAdminDashboard() {
+            renderAdminInventoryList();
+            document.getElementById('adminDashboardModal').classList.remove('hidden');
+        }
+
+        function closeAdminDashboard() {
+            document.getElementById('adminDashboardModal').classList.add('hidden');
+        }
+
+        function openAdminDashboardAndEdit(carId) {
+            openAdminDashboard();
+            startEditVehicle(carId);
+        }
+
+        function handleLocalImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                uploadedImageDataUrl = e.target.result;
+                document.getElementById('carImageUrl').value = '';
+                updateAdminImagePreview(uploadedImageDataUrl);
+                showToast('Fotografía cargada correctamente.');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setPresetImage(url) {
+            uploadedImageDataUrl = '';
+            document.getElementById('carImageUrl').value = url;
+            updateAdminImagePreview(url);
+        }
+
+        function updateAdminImagePreview(src) {
+            const wrap = document.getElementById('adminImgPreviewWrap');
+            const img = document.getElementById('adminImgPreview');
+            if (src && src.trim().length > 5) {
+                img.src = src;
+                wrap.classList.remove('hidden');
+            } else {
+                wrap.classList.add('hidden');
+            }
+        }
+
+        function handleSaveVehicle(event) {
+            event.preventDefault();
+            if (!isAdminAuthenticated) return;
+
+            const editId = document.getElementById('carIdInput').value;
+            const brand = document.getElementById('carBrand').value.trim();
+            const title = document.getElementById('carTitle').value.trim();
+            const origin = document.getElementById('carOrigin').value;
+            const country = document.getElementById('carCountry').value.trim() || (origin === 'Importación' ? 'Alemania' : 'España');
+            const price = Number(document.getElementById('carPrice').value);
+            const year = Number(document.getElementById('carYear').value);
+            const km = Number(document.getElementById('carKm').value);
+            const hp = Number(document.getElementById('carHp').value);
+            const fuel = document.getElementById('carFuel').value;
+            const description = document.getElementById('carDescription').value.trim();
+            const urlInput = document.getElementById('carImageUrl').value.trim();
+            const finalImage = uploadedImageDataUrl || urlInput || 'https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=800&q=75';
+
+            if (editId) {
+                const idx = vehicles.findIndex(c => c.id === editId);
+                if (idx !== -1) {
+                    vehicles[idx] = { ...vehicles[idx], brand, title, origin, country, price, year, km, hp, fuel, image: finalImage, description };
+                    showToast(`Vehículo actualizado: ${brand} ${title}`);
+                }
+            } else {
+                vehicles.unshift({
+                    id: 'sc-' + Date.now().toString().slice(-4),
+                    brand, title, origin, country, price, year, km, hp, fuel,
+                    transmission: 'Automático',
+                    image: finalImage,
+                    description
+                });
+                showToast(`Publicado en colección: ${brand} ${title}`);
+            }
+
+            saveVehiclesToStorage();
+            renderCatalog();
+            renderAdminInventoryList();
+            resetAdminForm();
+        }
+
+        function startEditVehicle(carId) {
+            const car = vehicles.find(c => c.id === carId);
+            if (!car) return;
+
+            document.getElementById('carIdInput').value = car.id;
+            document.getElementById('carBrand').value = car.brand;
+            document.getElementById('carTitle').value = car.title;
+            document.getElementById('carOrigin').value = car.origin;
+            document.getElementById('carCountry').value = car.country || '';
+            document.getElementById('carPrice').value = car.price;
+            document.getElementById('carYear').value = car.year;
+            document.getElementById('carKm').value = car.km;
+            document.getElementById('carHp').value = car.hp;
+            document.getElementById('carFuel').value = car.fuel;
+            document.getElementById('carDescription').value = car.description;
+
+            uploadedImageDataUrl = '';
+            document.getElementById('carImageUrl').value = car.image.startsWith('data:') ? '' : car.image;
+            updateAdminImagePreview(car.image);
+
+            document.getElementById('adminFormTitle').textContent = `Editando: ${car.brand} ${car.title}`;
+            document.getElementById('adminSubmitBtn').textContent = 'Guardar Cambios';
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+        }
+
+        function deleteVehicle(carId) {
+            vehicles = vehicles.filter(c => c.id !== carId);
+            saveVehiclesToStorage();
+            renderCatalog();
+            renderAdminInventoryList();
+            showToast('Anuncio retirado del catálogo.');
+        }
+
+        function resetAdminForm() {
+            document.getElementById('vehicleAdminForm').reset();
+            document.getElementById('carIdInput').value = '';
+            uploadedImageDataUrl = '';
+            document.getElementById('adminImgPreviewWrap').classList.add('hidden');
+            document.getElementById('adminFormTitle').textContent = 'Publicar Nuevo Vehículo';
+            document.getElementById('adminSubmitBtn').textContent = 'Guardar y Publicar Anuncio';
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+        }
+
+        function resetDefaultCatalog() {
+            vehicles = [...DEFAULT_VEHICLES];
+            saveVehiclesToStorage();
+            renderCatalog();
+            renderAdminInventoryList();
+            resetAdminForm();
+            showToast('Colección original restaurada.');
+        }
+
+        function renderAdminInventoryList() {
+            const listEl = document.getElementById('adminInventoryList');
+            const totalEl = document.getElementById('adminTotalCount');
+            if (!listEl) return;
+
+            totalEl.textContent = `${vehicles.length} unidades`;
+            listEl.innerHTML = vehicles.map(car => `
+                <div class="p-3.5 rounded-xl bg-obsidian-900 border border-white/10 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <img src="${car.image}" alt="${car.title}" loading="lazy" class="w-16 h-12 rounded-lg object-cover shrink-0 bg-obsidian-950">
+                        <div class="min-w-0">
+                            <span class="text-[10px] uppercase tracking-widest text-gold-400 block">${car.origin} · ${car.year}</span>
+                            <h5 class="font-serif text-lg text-ivory truncate leading-tight">${car.brand} ${car.title}</h5>
+                            <span class="text-xs text-warmgray">${formatCurrency(car.price)}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button onclick="startEditVehicle('${car.id}')" class="w-8 h-8 rounded-full border border-white/10 hover:border-gold-400 text-warmgray hover:text-gold-300 flex items-center justify-center">
+                            <i class="fa-solid fa-pen text-xs"></i>
+                        </button>
+                        <button onclick="deleteVehicle('${car.id}')" class="w-8 h-8 rounded-full border border-white/10 hover:border-red-400 text-warmgray hover:text-red-400 flex items-center justify-center">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ==========================================================================
+           8. BOOKING MODAL, SEPARATED FILES EXPORT & UI HELPERS
+           ========================================================================== */
+        function openBookingModal(serviceType, prefillCar = '') {
+            const modal = document.getElementById('bookingModal');
+            const select = document.getElementById('bookService');
+            const carInput = document.getElementById('bookCarModel');
+
+            if (select && serviceType) {
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value === serviceType) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            if (carInput) carInput.value = prefillCar;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeBookingModal() {
+            const modal = document.getElementById('bookingModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function submitBookingForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('bookName').value.trim();
+            closeBookingModal();
+            e.target.reset();
+            showToast(`Solicitud registrada. Gracias, ${name}.`);
+        }
+
+        function openCodeExportModal() {
+            const modal = document.getElementById('codeExportModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeCodeExportModal() {
+            const modal = document.getElementById('codeExportModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function copySeparatedFile(type) {
+            let content = '';
+            if (type === 'css') {
+                content = document.querySelector('style')?.innerText || '';
+            } else if (type === 'js') {
+                const scripts = document.querySelectorAll('body script');
+                content = scripts[scripts.length - 1]?.innerText || '';
+            } else {
+                content = document.documentElement.outerHTML;
+            }
+
+            const textarea = document.createElement('textarea');
+            textarea.value = content;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            showToast(`Archivo ${type.toUpperCase()} copiado al portapapeles.`);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('mobileMenuIcon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.className = 'fa-solid fa-xmark text-sm';
+            } else {
+                menu.classList.add('hidden');
+                icon.className = 'fa-solid fa-bars text-sm';
+            }
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto luxury-surface rounded-xl px-4 py-3 shadow-2xl flex items-center gap-3 text-xs text-ivory transform translate-y-3 opacity-0 transition-all duration-300';
+            toast.innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-gold-400 shrink-0"></span>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-3', 'opacity-0');
+            });
+            setTimeout(() => {
+                toast.classList.add('translate-y-3', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
