@@ -1,0 +1,2134 @@
+<!DOCTYPE html>
+<html lang="es" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEFY CRIS | Taller de Alta Gama & Concesionario Nacional e Importación</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Syne, Plus Jakarta Sans, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        display: ['Syne', 'sans-serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        carbon: {
+                            950: '#050608',
+                            900: '#0a0c10',
+                            800: '#12151c',
+                            700: '#1b202b',
+                            600: '#272e3d'
+                        },
+                        crimson: {
+                            500: '#e11d48',
+                            600: '#be123c'
+                        },
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#f59e0b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --cursor-x: 50vw;
+            --cursor-y: 50vh;
+        }
+
+        body {
+            background-color: #050608;
+            color: #f3f4f6;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+            selection-background-color: #e11d48;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050608;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1b202b;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e11d48;
+        }
+
+        /* Ambient Spotlight following cursor */
+        .ambient-spotlight {
+            pointer-events: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            background: radial-gradient(
+                750px circle at var(--cursor-x) var(--cursor-y),
+                rgba(225, 29, 72, 0.065),
+                rgba(59, 130, 246, 0.025) 40%,
+                transparent 80%
+            );
+            transition: opacity 0.3s ease;
+        }
+
+        /* Custom Cursor Follower (Desktop) */
+        .custom-cursor-dot,
+        .custom-cursor-ring {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            display: none;
+        }
+        @media (pointer: fine) {
+            .custom-cursor-dot {
+                display: block;
+                width: 6px;
+                height: 6px;
+                background-color: #e11d48;
+                box-shadow: 0 0 12px #e11d48;
+            }
+            .custom-cursor-ring {
+                display: block;
+                width: 38px;
+                height: 38px;
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+            }
+            .custom-cursor-ring.cursor-hover {
+                width: 58px;
+                height: 58px;
+                border-color: rgba(225, 29, 72, 0.8);
+                background-color: rgba(225, 29, 72, 0.08);
+            }
+        }
+
+        /* 3D Perspective Stage */
+        .perspective-stage {
+            perspective: 1400px;
+            transform-style: preserve-3d;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+        .layer-z-10 { transform: translateZ(25px); }
+        .layer-z-20 { transform: translateZ(55px); }
+        .layer-z-30 { transform: translateZ(90px); }
+        .layer-z-neg { transform: translateZ(-45px); }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(14, 17, 23, 0.72);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: linear-gradient(145deg, rgba(22, 26, 35, 0.85) 0%, rgba(10, 12, 16, 0.92) 100%);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            transition: border-color 0.35s ease, box-shadow 0.35s ease;
+        }
+        .glass-card:hover {
+            border-color: rgba(225, 29, 72, 0.45);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75), 0 0 30px -5px rgba(225, 29, 72, 0.15);
+        }
+
+        /* Subtle Carbon Grid Background */
+        .bg-grid-pattern {
+            background-size: 48px 48px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+        }
+
+        /* Text Outline Effect */
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.12);
+            color: transparent;
+        }
+
+        /* 3D Card Tilt Glare */
+        .tilt-card {
+            position: relative;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+        .tilt-glare {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            background: radial-gradient(
+                400px circle at var(--glare-x, 50%) var(--glare-y, 50%),
+                rgba(255, 255, 255, 0.09),
+                transparent 60%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .tilt-card:hover .tilt-glare {
+            opacity: 1;
+        }
+
+        /* Range Slider Styling */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: #1b202b;
+            height: 6px;
+            border-radius: 999px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #e11d48;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 10px rgba(225, 29, 72, 0.8);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-crimson-500 selection:text-white">
+
+    <!-- Ambient Spotlight & Custom Cursor -->
+    <div class="ambient-spotlight" id="ambientSpotlight"></div>
+    <div class="custom-cursor-dot" id="cursorDot"></div>
+    <div class="custom-cursor-ring" id="cursorRing"></div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- ==================== HEADER / NAVBAR ==================== -->
+    <header id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-4 sm:px-8">
+        <div class="max-w-7xl mx-auto glass-panel rounded-2xl px-4 sm:px-6 py-3.5 flex items-center justify-between shadow-2xl">
+            <!-- Brand Logo -->
+            <a href="#hero" class="flex items-center gap-3 group focus:outline-none">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-crimson-500 to-crimson-600 flex items-center justify-center shadow-lg shadow-crimson-500/25 group-hover:scale-105 transition-transform">
+                    <span class="font-display font-extrabold text-white text-lg tracking-wider">SC</span>
+                </div>
+                <div>
+                    <span class="font-display font-extrabold text-lg sm:text-xl tracking-widest text-white block leading-none">STEFY CRIS</span>
+                    <span class="font-mono text-[10px] uppercase tracking-[0.25em] text-gray-400 block mt-1">Taller & Import Motors</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-gray-300">
+                <a href="#catalogo" class="hover:text-white transition-colors py-1">Stock & Importación</a>
+                <a href="#experiencia-3d" class="hover:text-white transition-colors py-1">Ingeniería Stefy Cris</a>
+                <a href="#taller" class="hover:text-white transition-colors py-1">Taller de Alta Gama</a>
+                <a href="#importacion" class="hover:text-white transition-colors py-1">Proceso Importación</a>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <button onclick="openBookingModal('Cita de Taller')" class="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs sm:text-sm font-semibold text-white transition-all">
+                    <i class="fa-solid fa-wrench text-crimson-500"></i>
+                    <span>Cita Taller</span>
+                </button>
+
+                <!-- Admin Button (Dynamic State) -->
+                <button id="navAdminBtn" onclick="handleAdminAccessClick()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-crimson-500 to-crimson-600 hover:from-crimson-600 hover:to-crimson-500 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-crimson-500/25 transition-all">
+                    <i class="fa-solid fa-lock text-xs" id="navAdminIcon"></i>
+                    <span id="navAdminText">Acceso Admin</span>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-300 hover:text-white" aria-label="Menú">
+                    <i class="fa-solid fa-bars" id="mobileMenuIcon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden lg:hidden max-w-7xl mx-auto mt-2 glass-panel rounded-2xl p-5 border border-white/10 shadow-2xl">
+            <div class="flex flex-col gap-3 text-sm font-medium text-gray-200">
+                <a href="#catalogo" onclick="toggleMobileMenu()" class="px-3 py-2.5 rounded-xl hover:bg-white/5 flex items-center justify-between">
+                    <span>Stock Nacional e Importación</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-gray-500"></i>
+                </a>
+                <a href="#experiencia-3d" onclick="toggleMobileMenu()" class="px-3 py-2.5 rounded-xl hover:bg-white/5 flex items-center justify-between">
+                    <span>Showroom & Ingeniería</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-gray-500"></i>
+                </a>
+                <a href="#taller" onclick="toggleMobileMenu()" class="px-3 py-2.5 rounded-xl hover:bg-white/5 flex items-center justify-between">
+                    <span>Servicios de Taller</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-gray-500"></i>
+                </a>
+                <a href="#importacion" onclick="toggleMobileMenu()" class="px-3 py-2.5 rounded-xl hover:bg-white/5 flex items-center justify-between">
+                    <span>Importación a la Carta</span>
+                    <i class="fa-solid fa-chevron-right text-xs text-gray-500"></i>
+                </a>
+                <div class="pt-2 border-t border-white/10 flex gap-2">
+                    <button onclick="toggleMobileMenu(); openBookingModal('Cita de Taller');" class="w-full py-3 rounded-xl bg-white/10 text-white font-semibold text-xs uppercase tracking-wider">
+                        <i class="fa-solid fa-calendar-check mr-2 text-crimson-500"></i>Reservar Cita Taller
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== HERO SECTION (3D INTERACTIVE PARALLAX) ==================== -->
+    <section id="hero" class="relative min-h-screen pt-28 pb-16 lg:pt-36 lg:pb-24 flex items-center bg-grid-pattern overflow-hidden">
+        <!-- Decorative Background Glows -->
+        <div class="absolute top-1/4 -left-32 w-96 h-96 bg-crimson-500/15 rounded-full blur-[130px] pointer-events-none"></div>
+        <div class="absolute bottom-10 right-0 w-[28rem] h-[28rem] bg-blue-600/10 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <!-- Giant Background Watermark (Parallax Layer) -->
+        <div id="heroWatermark" class="absolute inset-x-0 top-1/2 -translate-y-1/2 text-center pointer-events-none select-none overflow-hidden z-0">
+            <span class="font-display font-extrabold text-[15vw] leading-none tracking-tighter text-outline uppercase opacity-40 block">
+                STEFY CRIS
+            </span>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 relative z-10 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                
+                <!-- Left Column: High-Impact Typography & Controls -->
+                <div class="lg:col-span-6 space-y-6 text-left" id="heroContent">
+                    <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+                        <span class="w-2 h-2 rounded-full bg-crimson-500 animate-pulse"></span>
+                        <span class="font-mono text-[11px] uppercase tracking-[0.2em] text-gray-300">Taller Especializado & Concesionario</span>
+                    </div>
+
+                    <h1 class="font-display font-extrabold text-4xl sm:text-6xl xl:text-7xl leading-[1.04] tracking-tight text-white">
+                        PRECISIÓN <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-crimson-500">MECÁNICA.</span><br>
+                        SELECCIÓN <span class="text-crimson-500">ELITE.</span>
+                    </h1>
+
+                    <p class="text-gray-400 text-base sm:text-lg max-w-xl leading-relaxed font-normal">
+                        En <strong class="text-white font-semibold">Stefy Cris</strong> fusionamos la ingeniería de nuestro taller de alto rendimiento con la venta exclusiva de vehículos <strong class="text-gray-200">Nacionales</strong> y de <strong class="text-gray-200">Importación Certificada</strong> desde Alemania y Europa.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="#catalogo" class="px-7 py-4 rounded-xl bg-crimson-500 hover:bg-crimson-600 text-white font-semibold text-sm tracking-wide shadow-xl shadow-crimson-500/25 transition-all flex items-center gap-3 group">
+                            <span>Explorar Stock Disponible</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <button onclick="openBookingModal('Importación a la Carta')" class="px-6 py-4 rounded-xl glass-panel hover:bg-white/10 text-white font-semibold text-sm tracking-wide transition-all flex items-center gap-2.5">
+                            <i class="fa-solid fa-earth-europe text-gold-400"></i>
+                            <span>Importar a la Carta</span>
+                        </button>
+                    </div>
+
+                    <!-- Live Telemetry Stats Row -->
+                    <div class="pt-6 grid grid-cols-3 gap-4 border-t border-white/10 max-w-lg">
+                        <div>
+                            <span class="font-mono text-2xl sm:text-3xl font-bold text-white block">150<span class="text-crimson-500">+</span></span>
+                            <span class="text-xs text-gray-400 block mt-0.5">Puntos de Revisión</span>
+                        </div>
+                        <div>
+                            <span class="font-mono text-2xl sm:text-3xl font-bold text-white block">100<span class="text-crimson-500">%</span></span>
+                            <span class="text-xs text-gray-400 block mt-0.5">Km Certificados</span>
+                        </div>
+                        <div>
+                            <span class="font-mono text-2xl sm:text-3xl font-bold text-white block">48<span class="text-gold-400">h</span></span>
+                            <span class="text-xs text-gray-400 block mt-0.5">Peritaje en Alemania</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: 3D Interactive Cursor Parallax Stage -->
+                <div class="lg:col-span-6 perspective-stage" id="hero3DStage">
+                    <div id="hero3DCard" class="preserve-3d relative rounded-3xl p-3 sm:p-4 glass-card border border-white/15 shadow-2xl">
+                        
+                        <!-- Background Depth Frame -->
+                        <div class="absolute -inset-3 rounded-3xl border border-crimson-500/20 pointer-events-none layer-z-neg"></div>
+
+                        <!-- Main Vehicle Visual -->
+                        <div class="relative rounded-2xl overflow-hidden aspect-[16/11] bg-carbon-900">
+                            <img 
+                                id="heroCarImage"
+                                src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1400&q=85" 
+                                alt="Porsche 911 GT3 Stefy Cris" 
+                                class="w-full h-full object-cover object-center scale-110 transition-transform duration-700"
+                                onerror="this.src='https://placehold.co/1200x800/0a0c10/e11d48?text=STEFY+CRIS+MOTORSPORT'"
+                            >
+                            <div class="absolute inset-0 bg-gradient-to-t from-carbon-950 via-transparent to-carbon-950/40"></div>
+
+                            <!-- Top Telemetry Bar inside image -->
+                            <div class="absolute top-4 left-4 right-4 flex items-center justify-between text-[11px] font-mono">
+                                <span class="px-3 py-1 rounded-full bg-carbon-950/80 backdrop-blur-md border border-white/10 text-emerald-400 flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                    DIAGNÓSTICO STEFY CRIS OK
+                                </span>
+                                <span class="px-3 py-1 rounded-full bg-crimson-500/90 text-white font-semibold uppercase tracking-wider">
+                                    IMPORTACIÓN ALEMANIA
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Floating 3D Badge 1 (Top Left - High Z Depth) -->
+                        <div class="hidden sm:flex items-center gap-3 absolute -top-6 -left-6 glass-panel px-4 py-3 rounded-2xl border border-white/15 shadow-2xl layer-z-30">
+                            <div class="w-10 h-10 rounded-xl bg-crimson-500/20 border border-crimson-500/40 flex items-center justify-center text-crimson-500">
+                                <i class="fa-solid fa-gauge-high text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-mono text-[10px] uppercase tracking-wider text-gray-400 block">Telemetría Motor</span>
+                                <span class="font-display font-bold text-sm text-white">510 CV / 9.000 RPM</span>
+                            </div>
+                        </div>
+
+                        <!-- Floating 3D Badge 2 (Bottom Right - High Z Depth) -->
+                        <div class="hidden sm:flex items-center gap-3 absolute -bottom-6 -right-6 glass-panel px-4 py-3 rounded-2xl border border-white/15 shadow-2xl layer-z-30">
+                            <div class="w-10 h-10 rounded-xl bg-gold-500/20 border border-gold-500/40 flex items-center justify-center text-gold-400">
+                                <i class="fa-solid fa-shield-halved text-lg"></i>
+                            </div>
+                            <div>
+                                <span class="font-mono text-[10px] uppercase tracking-wider text-gray-400 block">Garantía Propia</span>
+                                <span class="font-display font-bold text-sm text-white">Taller Stefy Cris 24M</span>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Interactive HUD Caption -->
+                        <div class="mt-3 px-2 py-1 flex items-center justify-between text-xs text-gray-400 layer-z-10">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-cube text-crimson-500"></i>
+                                <span class="font-mono text-[11px]">PARALLAX 3D ACTIVO — MUEVE EL CURSOR</span>
+                            </div>
+                            <span class="font-mono text-white font-semibold">STEFY CRIS LAB™</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SCROLLTRIGGER 3D EXPANSION SHOWCASE ==================== -->
+    <section id="experiencia-3d" class="relative py-20 lg:py-28 overflow-hidden bg-carbon-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8 mb-10 text-center">
+            <span class="font-mono text-xs uppercase tracking-[0.3em] text-crimson-500 block mb-2">Inmersión en Ingeniería</span>
+            <h2 class="font-display font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+                DEL TALLER A LA CARRETERA
+            </h2>
+            <p class="text-gray-400 text-sm sm:text-base max-w-2xl mx-auto mt-3">
+                Haz scroll para expandir nuestro centro técnico de alto rendimiento. Cada vehículo nacional o importado supera nuestra auditoría mecánica integral antes de su entrega.
+            </p>
+        </div>
+
+        <!-- Expanding Container controlled by GSAP ScrollTrigger -->
+        <div class="w-full flex justify-center items-center px-4 sm:px-0">
+            <div id="expandContainer" class="relative w-full max-w-4xl h-[62vh] sm:h-[74vh] rounded-[2rem] overflow-hidden border border-white/15 shadow-2xl mx-auto">
+                <img 
+                    id="expandImage"
+                    src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2000&q=85" 
+                    alt="Taller y Concesionario Stefy Cris" 
+                    class="w-full h-full object-cover object-center scale-125"
+                    onerror="this.src='https://placehold.co/1920x1080/0a0c10/e11d48?text=STEFY+CRIS+WORKSHOP'"
+                >
+                <div class="absolute inset-0 bg-gradient-to-t from-carbon-950 via-carbon-950/45 to-transparent"></div>
+
+                <!-- Floating Overlay Content Inside Expanding Visual -->
+                <div class="absolute inset-0 p-6 sm:p-12 lg:p-16 flex flex-col justify-between">
+                    <div class="flex flex-wrap items-center justify-between gap-4">
+                        <div class="glass-panel px-4 py-2 rounded-full border border-white/15 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-crimson-500"></span>
+                            <span class="font-mono text-xs uppercase tracking-widest text-white">STEFY CRIS PERFORMANCE CENTER</span>
+                        </div>
+                        <div class="font-mono text-xs text-gray-300 glass-panel px-4 py-2 rounded-full">
+                            <span>DIAGNOSIS OEM · IMPORTACIÓN UE · DETAILING</span>
+                        </div>
+                    </div>
+
+                    <div id="expandCaption" class="max-w-3xl space-y-4">
+                        <div class="inline-block px-3 py-1 rounded-md bg-crimson-500 text-white font-mono text-[11px] uppercase tracking-widest">
+                            Doble Garantía: Taller Propio + Concesionario
+                        </div>
+                        <h3 class="font-display font-extrabold text-2xl sm:text-4xl lg:text-5xl text-white leading-tight">
+                            No solo vendemos coches exclusivos. Conocemos cada tornillo.
+                        </h3>
+                        <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+                            A diferencia de los compraventas tradicionales, en Stefy Cris contamos con instalaciones mecánicas propias equipadas con diagnosis oficial multimarca, elevadores de última generación y técnicos especialistas en motores deportivos europeos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== DEALERSHIP CATALOG (NACIONAL & IMPORTACIÓN) ==================== -->
+    <section id="catalogo" class="relative py-20 lg:py-28 bg-carbon-900/60 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8">
+            
+            <!-- Section Header & Admin Quick Add Button -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-crimson-500 font-mono text-xs uppercase tracking-[0.25em] mb-2">
+                        <i class="fa-solid fa-car-side"></i>
+                        <span>Showroom Digital</span>
+                    </div>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+                        STOCK NACIONAL E IMPORTACIÓN
+                    </h2>
+                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <span id="catalogCountBadge" class="font-mono text-xs px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-300">
+                        Cargando stock...
+                    </span>
+                    <button onclick="handleAdminAccessClick()" class="px-4 py-2 rounded-xl bg-crimson-500/15 hover:bg-crimson-500/25 border border-crimson-500/30 text-crimson-400 text-xs font-mono uppercase tracking-wider transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Publicar Anuncio (Admin)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter & Search Bar -->
+            <div class="glass-panel rounded-2xl p-4 sm:p-5 mb-10 border border-white/10">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                    
+                    <!-- Origin Tabs (Todos / Nacional / Importación) -->
+                    <div class="md:col-span-5 flex p-1 rounded-xl bg-carbon-950 border border-white/10">
+                        <button onclick="setOriginFilter('TODOS')" id="filterBtn-TODOS" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all bg-crimson-500 text-white shadow">
+                            Todos
+                        </button>
+                        <button onclick="setOriginFilter('Nacional')" id="filterBtn-Nacional" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white">
+                            <i class="fa-solid fa-flag mr-1 text-amber-400"></i> Nacionales
+                        </button>
+                        <button onclick="setOriginFilter('Importación')" id="filterBtn-Importación" class="flex-1 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white">
+                            <i class="fa-solid fa-earth-europe mr-1 text-blue-400"></i> Importación
+                        </button>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="md:col-span-4 relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            oninput="renderCatalog()"
+                            placeholder="Buscar marca, modelo, CV..." 
+                            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-crimson-500 transition-colors"
+                        >
+                    </div>
+
+                    <!-- Sort Selector -->
+                    <div class="md:col-span-3">
+                        <select 
+                            id="sortSelect" 
+                            onchange="renderCatalog()"
+                            class="w-full px-4 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-gray-200 focus:outline-none focus:border-crimson-500 transition-colors"
+                        >
+                            <option value="featured">Ordenar: Destacados</option>
+                            <option value="price-desc">Precio: Mayor a Menor</option>
+                            <option value="price-asc">Precio: Menor a Mayor</option>
+                            <option value="year-desc">Año: Más Recientes</option>
+                            <option value="km-asc">Kilómetros: Menor a Mayor</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Vehicles Grid -->
+            <div id="catalogGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                <!-- Populated dynamically via JS -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ==================== WORKSHOP SERVICES (TALLER STEFY CRIS) ==================== -->
+    <section id="taller" class="relative py-20 lg:py-28 bg-carbon-950 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="font-mono text-xs uppercase tracking-[0.25em] text-crimson-500 block mb-2">Ingeniería & Mantenimiento</span>
+                <h2 class="font-display font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+                    TALLER DE ALTA GAMA STEFY CRIS
+                </h2>
+                <p class="text-gray-400 text-sm sm:text-base mt-3">
+                    Tecnología de diagnosis oficial, recambios OEM y atención meticulosa para mantener el valor y las prestaciones de tu vehículo al máximo nivel.
+                </p>
+            </div>
+
+            <!-- 3D Interactive Tilt Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-7">
+                
+                <!-- Service Card 1 -->
+                <div class="tilt-card glass-card rounded-3xl p-7 sm:p-8 flex flex-col justify-between group">
+                    <div class="tilt-glare"></div>
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-crimson-500/15 border border-crimson-500/30 flex items-center justify-center text-crimson-500 text-2xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-gears"></i>
+                            </div>
+                            <span class="font-mono text-xs text-gray-500">SRV // 01</span>
+                        </div>
+                        <h3 class="font-display font-bold text-2xl text-white mb-3">
+                            Mecánica General & Mantenimiento Oficial
+                        </h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            Revisiones periódicas respetando estrictamente las especificaciones del fabricante sin perder la garantía oficial. Sellado de libro electrónico digital (BMW, Mercedes-Benz, Audi, Porsche, Grupo VAG).
+                        </p>
+                        <ul class="space-y-2 text-xs text-gray-300 font-mono mb-6">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-crimson-500"></i> Mantenimiento de cajas automáticas (PDK, ZF, DSG, S-Tronic)</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-crimson-500"></i> Sistemas de frenos carbocerámicos y alto rendimiento</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-crimson-500"></i> Distribuciones, embragues y reconstrucción de motores</li>
+                        </ul>
+                    </div>
+                    <button onclick="openBookingModal('Mantenimiento Oficial')" class="w-full py-3.5 rounded-xl bg-white/5 hover:bg-crimson-500 text-white font-semibold text-xs uppercase tracking-wider border border-white/10 hover:border-crimson-500 transition-all">
+                        Solicitar Presupuesto / Cita
+                    </button>
+                </div>
+
+                <!-- Service Card 2 -->
+                <div class="tilt-card glass-card rounded-3xl p-7 sm:p-8 flex flex-col justify-between group">
+                    <div class="tilt-glare"></div>
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 text-2xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <span class="font-mono text-xs text-gray-500">SRV // 02</span>
+                        </div>
+                        <h3 class="font-display font-bold text-2xl text-white mb-3">
+                            Diagnóstico Electrónico Avanzado & Coding
+                        </h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            Localización de averías electrónicas complejas mediante osciloscopio y terminales de diagnóstico oficiales. Programación de unidades de control (ECU/TCU) y calibración de sistemas ADAS.
+                        </p>
+                        <ul class="space-y-2 text-xs text-gray-300 font-mono mb-6">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> Auditoría real de kilometraje en todos los módulos</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> Optimización electrónica Stage 1 / Stage 2 a medida</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-400"></i> Solución de fallos eléctricos y sistemas híbridos</li>
+                        </ul>
+                    </div>
+                    <button onclick="openBookingModal('Diagnóstico Electrónico')" class="w-full py-3.5 rounded-xl bg-white/5 hover:bg-blue-600 text-white font-semibold text-xs uppercase tracking-wider border border-white/10 hover:border-blue-500 transition-all">
+                        Reservar Diagnóstico
+                    </button>
+                </div>
+
+                <!-- Service Card 3 -->
+                <div class="tilt-card glass-card rounded-3xl p-7 sm:p-8 flex flex-col justify-between group">
+                    <div class="tilt-glare"></div>
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 text-2xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-plane-arrival"></i>
+                            </div>
+                            <span class="font-mono text-xs text-gray-500">SRV // 03</span>
+                        </div>
+                        <h3 class="font-display font-bold text-2xl text-white mb-3">
+                            Importación Llave en Mano desde Alemania
+                        </h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            ¿Buscas una configuración específica? Localizamos tu unidad en concesionarios oficiales de Alemania, realizamos peritaje mecánico presencial, transporte asegurado y matriculación en España.
+                        </p>
+                        <ul class="space-y-2 text-xs text-gray-300 font-mono mb-6">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Verificación de pintura con micrómetro e historial CarVertical/OEM</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Gestión integral de DUA, Impuesto de Matriculación e ITV</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-gold-400"></i> Revisión completa en nuestro taller antes de entregarte las llaves</li>
+                        </ul>
+                    </div>
+                    <button onclick="openBookingModal('Importación Personalizada')" class="w-full py-3.5 rounded-xl bg-white/5 hover:bg-gold-500 hover:text-carbon-950 text-white font-semibold text-xs uppercase tracking-wider border border-white/10 hover:border-gold-400 transition-all">
+                        Encargar Coche a la Carta
+                    </button>
+                </div>
+
+                <!-- Service Card 4 -->
+                <div class="tilt-card glass-card rounded-3xl p-7 sm:p-8 flex flex-col justify-between group">
+                    <div class="tilt-glare"></div>
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-spray-can-sparkles"></i>
+                            </div>
+                            <span class="font-mono text-xs text-gray-500">SRV // 04</span>
+                        </div>
+                        <h3 class="font-display font-bold text-2xl text-white mb-3">
+                            Pre-Compra, Detailing & Protección PPF
+                        </h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            Estética automotriz de nivel concurso y revisiones pre-compra exhaustivas. Devolvemos el brillo original a la carrocería con recubrimientos cerámicos 9H y film protector transparente (PPF).
+                        </p>
+                        <ul class="space-y-2 text-xs text-gray-300 font-mono mb-6">
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Corrección de laca en 3 etapas y Coating Cerámico</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Instalación de escapes deportivos (Akrapovič, Milltek, Remus)</li>
+                            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-emerald-400"></i> Restauración e hidratación de cueros y Alcántara</li>
+                        </ul>
+                    </div>
+                    <button onclick="openBookingModal('Detailing & Preparación')" class="w-full py-3.5 rounded-xl bg-white/5 hover:bg-emerald-500 hover:text-carbon-950 text-white font-semibold text-xs uppercase tracking-wider border border-white/10 hover:border-emerald-400 transition-all">
+                        Consultar Tratamiento
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== IMPORT PROCESS TIMELINE ==================== -->
+    <section id="importacion" class="relative py-20 lg:py-28 bg-carbon-900/50 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8">
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-6">
+                <div>
+                    <span class="font-mono text-xs uppercase tracking-[0.25em] text-gold-400 block mb-2">Protocolo Europeo</span>
+                    <h2 class="font-display font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+                        IMPORTACIÓN TRANSPARENTE EN 4 FASES
+                    </h2>
+                </div>
+                <p class="text-gray-400 text-sm sm:text-base max-w-md">
+                    Importamos directamente de concesionarios oficiales en Alemania (Stuttgart, Múnich, Frankfurt) con total trazabilidad técnica y fiscal.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-card rounded-2xl p-6 relative">
+                    <span class="font-display font-extrabold text-4xl text-white/10 absolute top-4 right-5">01</span>
+                    <div class="w-10 h-10 rounded-xl bg-crimson-500/20 text-crimson-500 flex items-center justify-center font-mono font-bold mb-4">1</div>
+                    <h3 class="font-display font-bold text-lg text-white mb-2">Búsqueda & Filtro</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">
+                        Seleccionamos unidades con historial oficial completo, único propietario y certificado libre de accidentes estructurales.
+                    </p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 relative">
+                    <span class="font-display font-extrabold text-4xl text-white/10 absolute top-4 right-5">02</span>
+                    <div class="w-10 h-10 rounded-xl bg-crimson-500/20 text-crimson-500 flex items-center justify-center font-mono font-bold mb-4">2</div>
+                    <h3 class="font-display font-bold text-lg text-white mb-2">Peritaje In-Situ</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">
+                        Un perito técnico verifica en origen compresión, lecturas de centralita, espesor de pintura y prueba dinámica en Autobahn.
+                    </p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 relative">
+                    <span class="font-display font-extrabold text-4xl text-white/10 absolute top-4 right-5">03</span>
+                    <div class="w-10 h-10 rounded-xl bg-crimson-500/20 text-crimson-500 flex items-center justify-center font-mono font-bold mb-4">3</div>
+                    <h3 class="font-display font-bold text-lg text-white mb-2">Logística & Taller</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">
+                        Transporte en camión cerrado hasta el Taller Stefy Cris, donde realizamos mantenimiento preventivo y detailing completo.
+                    </p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6 relative">
+                    <span class="font-display font-extrabold text-4xl text-white/10 absolute top-4 right-5">04</span>
+                    <div class="w-10 h-10 rounded-xl bg-crimson-500/20 text-crimson-500 flex items-center justify-center font-mono font-bold mb-4">4</div>
+                    <h3 class="font-display font-bold text-lg text-white mb-2">ITV & Entrega</h3>
+                    <p class="text-gray-400 text-xs leading-relaxed">
+                        Matriculación definitiva española, impuestos liquidados y entrega con 12/24 meses de garantía en nuestro propio taller.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-carbon-950 border-t border-white/10 pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-white/10">
+                
+                <div class="md:col-span-5 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-crimson-500 flex items-center justify-center">
+                            <span class="font-display font-extrabold text-white text-lg">SC</span>
+                        </div>
+                        <span class="font-display font-extrabold text-xl tracking-widest text-white">STEFY CRIS</span>
+                    </div>
+                    <p class="text-gray-400 text-sm max-w-sm leading-relaxed">
+                        Taller electromecánico de alta gama y concesionario especializado en vehículos deportivos y premium, tanto nacionales como de importación europea.
+                    </p>
+                    <div class="flex items-center gap-4 text-gray-400 pt-2">
+                        <span class="text-xs font-mono"><i class="fa-solid fa-location-dot text-crimson-500 mr-1.5"></i>Pol. Ind. Automoción, Nave 12 · España</span>
+                        <span class="text-xs font-mono"><i class="fa-solid fa-phone text-crimson-500 mr-1.5"></i>+34 900 88 99 11</span>
+                    </div>
+                </div>
+
+                <div class="md:col-span-3 space-y-3">
+                    <h4 class="font-mono text-xs uppercase tracking-widest text-white">Navegación</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#catalogo" class="hover:text-white transition-colors">Catálogo Nacional e Importación</a></li>
+                        <li><a href="#taller" class="hover:text-white transition-colors">Taller Mecánico Stefy Cris</a></li>
+                        <li><a href="#importacion" class="hover:text-white transition-colors">Importación desde Alemania</a></li>
+                        <li><button onclick="openBookingModal('Cita de Taller')" class="hover:text-white transition-colors">Solicitar Cita Previa</button></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-4 space-y-3">
+                    <h4 class="font-mono text-xs uppercase tracking-widest text-white">Gestión del Concesionario</h4>
+                    <p class="text-xs text-gray-400 leading-relaxed">
+                        Acceso exclusivo para el equipo de administración de Stefy Cris para dar de alta nuevos vehículos en stock, actualizar precios y gestionar anuncios.
+                    </p>
+                    <button onclick="handleAdminAccessClick()" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-mono uppercase tracking-wider text-white transition-all">
+                        <i class="fa-solid fa-user-shield text-crimson-500"></i>
+                        <span>Abrir Panel de Administración</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+                <p>© 2026 STEFY CRIS MOTORSPORT & TALLER S.L. Todos los derechos reservados.</p>
+                <p class="font-mono">GSAP 3 · SCROLLTRIGGER · 3D PARALLAX ENGINE</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== MODAL 1: ADMIN LOGIN ==================== -->
+    <div id="loginModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel rounded-3xl max-w-md w-full p-7 sm:p-8 border border-white/15 shadow-2xl relative animate-fadeIn">
+            <button onclick="closeLoginModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-crimson-500/20 border border-crimson-500/40 flex items-center justify-center text-crimson-500 text-xl">
+                    <i class="fa-solid fa-user-lock"></i>
+                </div>
+                <div>
+                    <span class="font-mono text-[10px] uppercase tracking-widest text-crimson-400 block">Área Restringida</span>
+                    <h3 class="font-display font-bold text-2xl text-white">Acceso Admin Stefy Cris</h3>
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-400 mb-5 leading-relaxed">
+                Introduce tus credenciales de administrador para publicar nuevos coches nacionales o de importación, subir fotografías y editar el catálogo.
+            </p>
+
+            <!-- Demo Credentials Helper Box -->
+            <div class="mb-5 p-3.5 rounded-2xl bg-carbon-950/90 border border-white/10 flex items-center justify-between gap-2">
+                <div class="font-mono text-[11px] text-gray-300 space-y-0.5">
+                    <div><span class="text-gray-500">Usuario:</span> <strong class="text-white">admin</strong></div>
+                    <div><span class="text-gray-500">Clave:</span> <strong class="text-white">stefycris2026</strong></div>
+                </div>
+                <button type="button" onclick="fillDemoCredentials()" class="px-3 py-1.5 rounded-lg bg-crimson-500/20 hover:bg-crimson-500/30 border border-crimson-500/40 text-crimson-300 font-mono text-[11px] transition-colors">
+                    Autocompletar
+                </button>
+            </div>
+
+            <form id="loginForm" onsubmit="submitAdminLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block font-mono text-[11px] uppercase tracking-wider text-gray-400 mb-1.5">Usuario Administrador</label>
+                    <input 
+                        type="text" 
+                        id="adminUsername" 
+                        required
+                        placeholder="admin"
+                        class="w-full px-4 py-3 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:outline-none focus:border-crimson-500"
+                    >
+                </div>
+                <div>
+                    <label class="block font-mono text-[11px] uppercase tracking-wider text-gray-400 mb-1.5">Contraseña</label>
+                    <input 
+                        type="password" 
+                        id="adminPassword" 
+                        required
+                        placeholder="••••••••••••"
+                        class="w-full px-4 py-3 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:outline-none focus:border-crimson-500"
+                    >
+                </div>
+
+                <div id="loginErrorMsg" class="hidden text-xs text-crimson-400 bg-crimson-500/10 border border-crimson-500/30 rounded-xl p-3 font-mono">
+                    Credenciales incorrectas. Usa admin / stefycris2026.
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-crimson-500 hover:bg-crimson-600 text-white font-semibold text-sm shadow-lg shadow-crimson-500/25 transition-all">
+                    Iniciar Sesión como Administrador
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 2: FULL ADMIN DASHBOARD (CRUD) ==================== -->
+    <div id="adminDashboardModal" class="fixed inset-0 z-[75] hidden overflow-y-auto bg-black/85 backdrop-blur-xl p-3 sm:p-6 lg:p-10">
+        <div class="max-w-6xl mx-auto glass-panel rounded-3xl border border-white/15 shadow-2xl overflow-hidden my-auto">
+            
+            <!-- Dashboard Top Bar -->
+            <div class="px-6 py-5 bg-carbon-950 border-b border-white/10 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <div>
+                        <span class="font-mono text-[10px] uppercase tracking-widest text-emerald-400 block">Sesión Administrador Activa</span>
+                        <h3 class="font-display font-bold text-xl sm:text-2xl text-white">Panel de Gestión de Stock — Stefy Cris</h3>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2.5">
+                    <button onclick="resetDefaultCatalog()" class="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono text-gray-300 transition-colors" title="Restaurar los 6 coches de demostración">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Restaurar Demo
+                    </button>
+                    <button onclick="logoutAdmin()" class="px-3.5 py-2 rounded-xl bg-crimson-500/15 hover:bg-crimson-500/25 border border-crimson-500/30 text-xs font-mono text-crimson-300 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i> Cerrar Sesión
+                    </button>
+                    <button onclick="closeAdminDashboard()" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Body: Left Form (Add/Edit) + Right Current Inventory List -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-white/10">
+                
+                <!-- Left Column: Vehicle Form -->
+                <div class="lg:col-span-6 p-6 sm:p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h4 id="adminFormTitle" class="font-display font-bold text-lg text-white flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle text-crimson-500"></i>
+                            <span>Publicar Nuevo Vehículo</span>
+                        </h4>
+                        <button type="button" id="cancelEditBtn" onclick="resetAdminForm()" class="hidden text-xs font-mono text-gray-400 hover:text-white underline">
+                            Cancelar edición
+                        </button>
+                    </div>
+
+                    <form id="vehicleAdminForm" onsubmit="handleSaveVehicle(event)" class="space-y-4">
+                        <input type="hidden" id="carIdInput" value="">
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Marca *</label>
+                                <input type="text" id="carBrand" required placeholder="Ej: Porsche, BMW, Audi..." class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Modelo y Versión *</label>
+                                <input type="text" id="carTitle" required placeholder="Ej: 911 Carrera S (992)" class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Origen *</label>
+                                <select id="carOrigin" class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                                    <option value="Nacional">Nacional (España)</option>
+                                    <option value="Importación">Importación (UE/Alemania)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Procedencia / Ciudad</label>
+                                <input type="text" id="carCountry" placeholder="Ej: Stuttgart / Madrid" class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Precio (€) *</label>
+                                <input type="number" id="carPrice" required min="1000" step="100" placeholder="89900" class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div>
+                                <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Año *</label>
+                                <input type="number" id="carYear" required min="1990" max="2027" placeholder="2024" class="w-full px-3 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Kilómetros *</label>
+                                <input type="number" id="carKm" required min="0" placeholder="18500" class="w-full px-3 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Potencia (CV)*</label>
+                                <input type="number" id="carHp" required min="50" placeholder="450" class="w-full px-3 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Combustible</label>
+                                <select id="carFuel" class="w-full px-3 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                                    <option value="Gasolina">Gasolina</option>
+                                    <option value="Híbrido Enchufable">Híbrido PHEV</option>
+                                    <option value="Diésel">Diésel</option>
+                                    <option value="Eléctrico">Eléctrico</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Image Upload or URL -->
+                        <div class="p-4 rounded-2xl bg-carbon-950/80 border border-white/10 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <label class="font-mono text-[11px] uppercase text-gray-300">Fotografía del Vehículo *</label>
+                                <span class="text-[11px] text-gray-500">URL o Subir Archivo Local</span>
+                            </div>
+
+                            <input 
+                                type="url" 
+                                id="carImageUrl" 
+                                oninput="updateAdminImagePreview(this.value)"
+                                placeholder="https://images.unsplash.com/..." 
+                                class="w-full px-3.5 py-2 rounded-xl bg-carbon-900 border border-white/10 text-xs text-white focus:border-crimson-500 focus:outline-none"
+                            >
+
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <label class="cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs text-gray-200 transition-colors">
+                                    <i class="fa-solid fa-upload text-crimson-500"></i>
+                                    <span>Subir foto desde tu dispositivo</span>
+                                    <input type="file" id="carImageFile" accept="image/*" onchange="handleLocalImageUpload(event)" class="hidden">
+                                </label>
+
+                                <!-- Quick Preset Photos for Fast Demo Testing -->
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-[10px] font-mono text-gray-500">Presets:</span>
+                                    <button type="button" onclick="setPresetImage('https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1000&q=80')" class="px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300">BMW</button>
+                                    <button type="button" onclick="setPresetImage('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1000&q=80')" class="px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300">AMG</button>
+                                    <button type="button" onclick="setPresetImage('https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1000&q=80')" class="px-2 py-1 rounded bg-white/5 hover:bg-white/10 text-[10px] font-mono text-gray-300"> Supercar</button>
+                                </div>
+                            </div>
+
+                            <!-- Live Image Preview -->
+                            <div id="adminImgPreviewWrap" class="hidden relative h-36 rounded-xl overflow-hidden border border-white/10">
+                                <img id="adminImgPreview" src="" alt="Vista previa" class="w-full h-full object-cover">
+                                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/75 text-[10px] font-mono text-emerald-400">Vista Previa Lista</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Descripción Técnica y Equipamiento *</label>
+                            <textarea 
+                                id="carDescription" 
+                                required 
+                                rows="3" 
+                                placeholder="Detalla el estado mecánico, extras destacados, historial de mantenimiento en Taller Stefy Cris..."
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none"
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" id="adminSubmitBtn" class="w-full py-3.5 rounded-xl bg-crimson-500 hover:bg-crimson-600 text-white font-semibold text-sm shadow-lg shadow-crimson-500/25 transition-all flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>Guardar y Publicar en el Catálogo</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right Column: Current Vehicles Inventory List -->
+                <div class="lg:col-span-6 p-6 sm:p-8 flex flex-col justify-between bg-carbon-950/40">
+                    <div>
+                        <div class="flex items-center justify-between mb-6">
+                            <h4 class="font-display font-bold text-lg text-white">Anuncios Activos en Web</h4>
+                            <span id="adminTotalCount" class="font-mono text-xs px-2.5 py-1 rounded-md bg-white/5 text-gray-400">0 vehículos</span>
+                        </div>
+
+                        <div id="adminInventoryList" class="space-y-3 max-h-[520px] overflow-y-auto pr-1">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs text-gray-400">
+                        <span><i class="fa-solid fa-database text-crimson-500 mr-1.5"></i>Sincronización instantánea con el catálogo público</span>
+                        <button onclick="closeAdminDashboard()" class="text-white hover:text-crimson-400 font-semibold">Ver Catálogo →</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 3: VEHICLE DETAIL & FINANCING CALCULATOR ==================== -->
+    <div id="vehicleDetailModal" class="fixed inset-0 z-[70] hidden overflow-y-auto bg-black/85 backdrop-blur-xl p-3 sm:p-6">
+        <div class="max-w-5xl mx-auto glass-panel rounded-3xl border border-white/15 shadow-2xl overflow-hidden my-6 relative">
+            <button onclick="closeVehicleDetailModal()" class="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-black/70 hover:bg-crimson-500 text-white flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="vehicleDetailContent">
+                <!-- Populated dynamically when user clicks a car -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL 4: WORKSHOP & IMPORT BOOKING ==================== -->
+    <div id="bookingModal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="glass-panel rounded-3xl max-w-lg w-full p-7 sm:p-8 border border-white/15 shadow-2xl relative">
+            <button onclick="closeBookingModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <span class="font-mono text-[10px] uppercase tracking-widest text-crimson-500 block mb-1">Atención Personalizada</span>
+            <h3 id="bookingModalTitle" class="font-display font-bold text-2xl text-white mb-2">Reservar Cita en Taller Stefy Cris</h3>
+            <p class="text-xs text-gray-400 mb-6">
+                Completa tus datos y un asesor técnico de Stefy Cris te confirmará día y hora o presupuesto de importación en menos de 2 horas.
+            </p>
+
+            <form onsubmit="submitBookingForm(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Nombre Completo *</label>
+                        <input type="text" id="bookName" required placeholder="Carlos Mendoza" class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Teléfono / WhatsApp *</label>
+                        <input type="tel" id="bookPhone" required placeholder="+34 600 000 000" class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Departamento</label>
+                        <select id="bookService" class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                            <option value="Cita de Taller">Taller: Mantenimiento Oficial</option>
+                            <option value="Diagnóstico Electrónico">Taller: Diagnóstico / Avería</option>
+                            <option value="Importación a la Carta">Concesionario: Importación a la Carta</option>
+                            <option value="Reserva de Vehículo en Stock">Concesionario: Información de Stock</option>
+                            <option value="Detailing & Preparación">Taller: Reprogramación / Detailing</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Vehículo / Modelo de Interés</label>
+                        <input type="text" id="bookCarModel" placeholder="Ej: Audi RS6 / Matrícula 1234..." class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-mono text-[11px] uppercase text-gray-400 mb-1">Comentarios adicionales</label>
+                    <textarea id="bookNotes" rows="3" placeholder="Indica fecha preferida o detalles de lo que necesitas..." class="w-full px-3.5 py-2.5 rounded-xl bg-carbon-950 border border-white/10 text-sm text-white focus:border-crimson-500 focus:outline-none"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-crimson-500 hover:bg-crimson-600 text-white font-semibold text-sm shadow-lg shadow-crimson-500/25 transition-all">
+                    Confirmar Solicitud con Stefy Cris
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== APPLICATION JAVASCRIPT ==================== -->
+    <script>
+        /* ==========================================================================
+           1. INITIAL LUXURY VEHICLE DATASET (NACIONAL & IMPORTACIÓN)
+           ========================================================================== */
+        const STORAGE_KEY_CARS = 'stefy_cris_vehicles_v1';
+        const STORAGE_KEY_ADMIN = 'stefy_cris_admin_logged_in';
+
+        const DEFAULT_VEHICLES = [
+            {
+                id: 'sc-101',
+                brand: 'Porsche',
+                title: '911 Carrera S (992) PDK Sport Chrono',
+                origin: 'Importación',
+                country: 'Stuttgart, Alemania',
+                price: 134900,
+                year: 2023,
+                km: 14200,
+                hp: 450,
+                fuel: 'Gasolina',
+                transmission: 'Automático PDK 8v',
+                image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1200&q=85',
+                description: 'Unidad importada directamente de Centro Oficial Porsche Stuttgart. Paquete Sport Chrono, escape deportivo Porsche (PSE), eje trasero direccional, faros Matrix LED PDLS+ y asientos deportivos Plus en cuero negro. Revisión de 150 puntos recién realizada en Taller Stefy Cris.'
+            },
+            {
+                id: 'sc-102',
+                brand: 'BMW',
+                title: 'M3 Competition M xDrive Touring',
+                origin: 'Importación',
+                country: 'Múnich, Alemania',
+                price: 108500,
+                year: 2024,
+                km: 9800,
+                hp: 510,
+                fuel: 'Gasolina',
+                transmission: 'M Steptronic 8v',
+                image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=85',
+                description: 'Espectacular BMW M3 Touring xDrive importado de concesionario oficial BMW Múnich. Paquete exterior M Carbon, asientos baquet M de fibra de carbono, frenos M Compound y sistema de sonido Harman Kardon. Kilometraje certificado por diagnosis oficial en Stefy Cris.'
+            },
+            {
+                id: 'sc-103',
+                brand: 'Audi',
+                title: 'RS6 Avant Performance Quattro Tiptronic',
+                origin: 'Nacional',
+                country: 'Madrid, España',
+                price: 142000,
+                year: 2023,
+                km: 21500,
+                hp: 630,
+                fuel: 'Gasolina',
+                transmission: 'Tiptronic 8v',
+                image: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?auto=format&fit=crop&w=1200&q=85',
+                description: 'Vehículo Nacional de único propietario con historial completo oficial. Motor V8 4.0 TFSI biturbo de 630 CV, paquete dinámico RS Plus, diferencial deportivo quattro, escape deportivo RS, techo panorámico y llantas de 22 pulgadas. Tratamiento cerámico integral aplicado en Stefy Cris.'
+            },
+            {
+                id: 'sc-104',
+                brand: 'Mercedes-AMG',
+                title: 'GT 63 S 4MATIC+ Coupé 4 Puertas',
+                origin: 'Importación',
+                country: 'Frankfurt, Alemania',
+                price: 126800,
+                year: 2022,
+                km: 29400,
+                hp: 639,
+                fuel: 'Gasolina',
+                transmission: 'AMG Speedshift MCT 9G',
+                image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=1200&q=85',
+                description: 'Importación seleccionada en estado de reestreno. Paquete aerodinámico AMG, dirección activa en eje trasero, interior en cuero exclusivo Napa con volante AMG Performance en Alcántara y sonido Burmester High-End 3D. Mantenimiento completo de caja y motor recién hecho en nuestro taller.'
+            },
+            {
+                id: 'sc-105',
+                brand: 'Cupra',
+                title: 'Formentor VZ5 2.5 TSI 4Drive Edición Limitada',
+                origin: 'Nacional',
+                country: 'Barcelona, España',
+                price: 56900,
+                year: 2023,
+                km: 16900,
+                hp: 390,
+                fuel: 'Gasolina',
+                transmission: 'DSG 7v',
+                image: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?auto=format&fit=crop&w=1200&q=85',
+                description: 'Unidad Nacional numerada con el legendario motor 5 cilindros 2.5 TSI de 390 CV y modo Torque Splitter. Frenos Akebono de 6 pistones, difusor trasero en fibra de carbono genuina y asientos CupBucket en cuero azul petróleo. Garantía de 24 meses Stefy Cris.'
+            },
+            {
+                id: 'sc-106',
+                brand: 'Volkswagen',
+                title: 'Golf R 20 Anniversary 2.0 TSI 4Motion',
+                origin: 'Nacional',
+                country: 'Valencia, España',
+                price: 49500,
+                year: 2023,
+                km: 19300,
+                hp: 333,
+                fuel: 'Gasolina',
+                transmission: 'DSG 7v',
+                image: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=85',
+                description: 'Edición especial 20 Aniversario Nacional. Incluye paquete R-Performance con modo Drift y Special Nürburgring, línea de escape completa en titanio Akrapovič de serie y molduras interiores en carbono real.'
+            }
+        ];
+
+        // Global State
+        let vehicles = [];
+        let currentOriginFilter = 'TODOS';
+        let isAdminAuthenticated = false;
+        let uploadedImageDataUrl = '';
+        let activeDetailCar = null;
+
+        /* ==========================================================================
+           2. INITIALIZATION & STORAGE MANAGEMENT
+           ========================================================================== */
+        window.onload = function () {
+            loadVehiclesFromStorage();
+            checkAdminSession();
+            renderCatalog();
+            initCursorAndParallax();
+            initGSAPAnimations();
+            initServiceTiltCards();
+        };
+
+        function loadVehiclesFromStorage() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_CARS);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        vehicles = parsed;
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.warn('Error leyendo localStorage, cargando catálogo por defecto.');
+            }
+            vehicles = [...DEFAULT_VEHICLES];
+            saveVehiclesToStorage();
+        }
+
+        function saveVehiclesToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY_CARS, JSON.stringify(vehicles));
+            } catch (e) {
+                showToast('Aviso: La imagen subida es muy pesada para el almacenamiento local, pero se mantendrá en esta sesión.', 'warning');
+            }
+        }
+
+        function checkAdminSession() {
+            try {
+                isAdminAuthenticated = localStorage.getItem(STORAGE_KEY_ADMIN) === 'true';
+            } catch (e) {
+                isAdminAuthenticated = false;
+            }
+            updateAdminUIState();
+        }
+
+        function updateAdminUIState() {
+            const navIcon = document.getElementById('navAdminIcon');
+            const navText = document.getElementById('navAdminText');
+            const navBtn = document.getElementById('navAdminBtn');
+
+            if (isAdminAuthenticated) {
+                navIcon.className = 'fa-solid fa-sliders text-xs text-emerald-300';
+                navText.textContent = 'Panel Admin (Activo)';
+                navBtn.className = 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-emerald-600/25 transition-all';
+            } else {
+                navIcon.className = 'fa-solid fa-lock text-xs';
+                navText.textContent = 'Acceso Admin';
+                navBtn.className = 'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-crimson-500 to-crimson-600 hover:from-crimson-600 hover:to-crimson-500 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-crimson-500/25 transition-all';
+            }
+        }
+
+        /* ==========================================================================
+           3. INTERACTIVE 3D CURSOR PARALLAX & CUSTOM FOLLOWER
+           ========================================================================== */
+        function initCursorAndParallax() {
+            const cursorDot = document.getElementById('cursorDot');
+            const cursorRing = document.getElementById('cursorRing');
+            const hero3DCard = document.getElementById('hero3DCard');
+            const heroCarImage = document.getElementById('heroCarImage');
+            const heroWatermark = document.getElementById('heroWatermark');
+
+            // Smooth quickTo setters with GSAP
+            const xDot = gsap.quickTo(cursorDot, 'x', { duration: 0.1, ease: 'power3' });
+            const yDot = gsap.quickTo(cursorDot, 'y', { duration: 0.1, ease: 'power3' });
+            const xRing = gsap.quickTo(cursorRing, 'x', { duration: 0.35, ease: 'power3' });
+            const yRing = gsap.quickTo(cursorRing, 'y', { duration: 0.35, ease: 'power3' });
+
+            window.addEventListener('mousemove', (e) => {
+                // Update CSS variables for ambient spotlight
+                document.documentElement.style.setProperty('--cursor-x', `${e.clientX}px`);
+                document.documentElement.style.setProperty('--cursor-y', `${e.clientY}px`);
+
+                // Update custom cursor position
+                xDot(e.clientX);
+                yDot(e.clientY);
+                xRing(e.clientX);
+                yRing(e.clientY);
+
+                // Calculate normalized cursor position (-0.5 to 0.5)
+                const normX = (e.clientX / window.innerWidth) - 0.5;
+                const normY = (e.clientY / window.innerHeight) - 0.5;
+
+                // 3D Hero Stage Parallax rotation
+                if (hero3DCard) {
+                    gsap.to(hero3DCard, {
+                        rotateY: normX * 18,
+                        rotateX: -normY * 16,
+                        duration: 0.8,
+                        ease: 'power2.out'
+                    });
+                }
+
+                if (heroCarImage) {
+                    gsap.to(heroCarImage, {
+                        x: -normX * 26,
+                        y: -normY * 20,
+                        duration: 0.9,
+                        ease: 'power2.out'
+                    });
+                }
+
+                if (heroWatermark) {
+                    gsap.to(heroWatermark, {
+                        x: normX * 70,
+                        y: normY * 35,
+                        duration: 1.2,
+                        ease: 'power2.out'
+                    });
+                }
+            });
+
+            // Hover feedback on interactive elements
+            document.addEventListener('mouseover', (e) => {
+                if (e.target.closest('a, button, input, select, textarea, .cursor-pointer')) {
+                    cursorRing.classList.add('cursor-hover');
+                } else {
+                    cursorRing.classList.remove('cursor-hover');
+                }
+            });
+        }
+
+        function initServiceTiltCards() {
+            const tiltCards = document.querySelectorAll('.tilt-card');
+            tiltCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = ((y - centerY) / centerY) * -6;
+                    const rotateY = ((x - centerX) / centerX) * 6;
+
+                    card.style.setProperty('--glare-x', `${(x / rect.width) * 100}%`);
+                    card.style.setProperty('--glare-y', `${(y / rect.height) * 100}%`);
+
+                    gsap.to(card, {
+                        rotateX: rotateX,
+                        rotateY: rotateY,
+                        duration: 0.4,
+                        ease: 'power2.out',
+                        transformPerspective: 1000
+                    });
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    gsap.to(card, {
+                        rotateX: 0,
+                        rotateY: 0,
+                        duration: 0.6,
+                        ease: 'elastic.out(1, 0.5)'
+                    });
+                });
+            });
+        }
+
+        /* ==========================================================================
+           4. GSAP & SCROLLTRIGGER ANIMATIONS
+           ========================================================================== */
+        function initGSAPAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Hero Entrance Animation
+            gsap.from('#heroContent > *', {
+                y: 40,
+                opacity: 0,
+                duration: 0.9,
+                stagger: 0.12,
+                ease: 'power3.out'
+            });
+
+            gsap.from('#hero3DStage', {
+                scale: 0.9,
+                opacity: 0,
+                rotateY: -15,
+                duration: 1.2,
+                delay: 0.2,
+                ease: 'power3.out'
+            });
+
+            // ScrollTrigger 3D Image Expansion Showcase
+            const expandContainer = document.getElementById('expandContainer');
+            const expandImage = document.getElementById('expandImage');
+            const expandCaption = document.getElementById('expandCaption');
+
+            if (expandContainer && expandImage) {
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: '#experiencia-3d',
+                        start: 'top 75%',
+                        end: 'bottom 35%',
+                        scrub: 1
+                    }
+                });
+
+                tl.fromTo(expandContainer, 
+                    {
+                        scale: 0.82,
+                        borderRadius: '2.5rem',
+                        maxWidth: '56rem'
+                    },
+                    {
+                        scale: 1,
+                        borderRadius: '0.75rem',
+                        maxWidth: '94vw',
+                        ease: 'none'
+                    }, 0
+                );
+
+                tl.fromTo(expandImage,
+                    { scale: 1.28, yPercent: -6 },
+                    { scale: 1.02, yPercent: 6, ease: 'none' },
+                    0
+                );
+
+                tl.fromTo(expandCaption,
+                    { y: 40, opacity: 0.5 },
+                    { y: 0, opacity: 1, ease: 'none' },
+                    0
+                );
+            }
+
+            // Workshop cards staggered reveal on scroll
+            gsap.from('#taller .tilt-card', {
+                scrollTrigger: {
+                    trigger: '#taller',
+                    start: 'top 78%'
+                },
+                y: 50,
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.15,
+                ease: 'power3.out'
+            });
+        }
+
+        /* ==========================================================================
+           5. CATALOG RENDERING, FILTERING & SORTING
+           ========================================================================== */
+        function setOriginFilter(origin) {
+            currentOriginFilter = origin;
+            ['TODOS', 'Nacional', 'Importación'].forEach(tab => {
+                const btn = document.getElementById(`filterBtn-${tab}`);
+                if (!btn) return;
+                if (tab === origin) {
+                    btn.className = 'flex-1 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all bg-crimson-500 text-white shadow';
+                } else {
+                    btn.className = 'flex-1 py-2.5 px-3 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white';
+                }
+            });
+            renderCatalog();
+        }
+
+        function formatCurrency(num) {
+            return new Intl.NumberFormat('es-ES', {
+                style: 'currency',
+                currency: 'EUR',
+                maximumFractionDigits: 0
+            }).format(num);
+        }
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat('es-ES').format(num);
+        }
+
+        function renderCatalog() {
+            const grid = document.getElementById('catalogGrid');
+            const searchQuery = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+            const sortBy = document.getElementById('sortSelect')?.value || 'featured';
+            const countBadge = document.getElementById('catalogCountBadge');
+
+            let filtered = vehicles.filter(car => {
+                const matchesOrigin = currentOriginFilter === 'TODOS' || car.origin === currentOriginFilter;
+                const matchesSearch = !searchQuery || 
+                    car.brand.toLowerCase().includes(searchQuery) ||
+                    car.title.toLowerCase().includes(searchQuery) ||
+                    (car.country && car.country.toLowerCase().includes(searchQuery)) ||
+                    String(car.hp).includes(searchQuery);
+                return matchesOrigin && matchesSearch;
+            });
+
+            // Sorting
+            if (sortBy === 'price-desc') filtered.sort((a, b) => b.price - a.price);
+            if (sortBy === 'price-asc') filtered.sort((a, b) => a.price - b.price);
+            if (sortBy === 'year-desc') filtered.sort((a, b) => b.year - a.year);
+            if (sortBy === 'km-asc') filtered.sort((a, b) => a.km - b.km);
+
+            if (countBadge) {
+                countBadge.textContent = `${filtered.length} ${filtered.length === 1 ? 'vehículo disponible' : 'vehículos disponibles'}`;
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full glass-card rounded-3xl p-12 text-center border border-white/10">
+                        <i class="fa-solid fa-car-tunnel text-4xl text-gray-600 mb-4"></i>
+                        <h3 class="font-display font-bold text-xl text-white mb-2">No se encontraron vehículos con esos filtros</h3>
+                        <p class="text-gray-400 text-sm mb-6">Prueba a cambiar el filtro o consúltanos para importarlo a la carta desde Alemania.</p>
+                        <button onclick="setOriginFilter('TODOS'); document.getElementById('searchInput').value=''; renderCatalog();" class="px-5 py-2.5 rounded-xl bg-crimson-500 text-white text-xs font-semibold">
+                            Ver Todo el Stock
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(car => {
+                const isImport = car.origin === 'Importación';
+                const badgeClass = isImport 
+                    ? 'bg-blue-500/90 text-white border-blue-400/40' 
+                    : 'bg-amber-500/90 text-carbon-950 font-bold border-amber-300/40';
+                const badgeIcon = isImport ? 'fa-earth-europe' : 'fa-flag';
+
+                // Estimated monthly payment preview
+                const monthlyEst = Math.round((car.price * 0.8) / 72 * 1.18);
+
+                return `
+                    <article class="catalog-card glass-card rounded-3xl overflow-hidden flex flex-col justify-between group cursor-pointer" onclick="openVehicleDetailModal('${car.id}')">
+                        <div>
+                            <!-- Image Container -->
+                            <div class="relative aspect-[16/10] overflow-hidden bg-carbon-950">
+                                <img 
+                                    src="${car.image}" 
+                                    alt="${car.brand} ${car.title}" 
+                                    class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
+                                    onerror="this.src='https://placehold.co/800x500/0a0c10/e11d48?text=${encodeURIComponent(car.brand)}'"
+                                >
+                                <div class="absolute inset-0 bg-gradient-to-t from-carbon-950 via-transparent to-black/30"></div>
+
+                                <!-- Top Badges -->
+                                <div class="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2">
+                                    <span class="px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-wider border backdrop-blur-md flex items-center gap-1.5 ${badgeClass}">
+                                        <i class="fa-solid ${badgeIcon}"></i>
+                                        ${car.origin}
+                                    </span>
+                                    <span class="px-2.5 py-1 rounded-full bg-carbon-950/85 backdrop-blur-md border border-white/15 font-mono text-[11px] text-gray-200">
+                                        ${car.year}
+                                    </span>
+                                </div>
+
+                                <!-- Bottom Origin Location -->
+                                <div class="absolute bottom-3 left-3.5 right-3.5 flex items-center justify-between">
+                                    <span class="font-mono text-[11px] text-gray-300 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-location-dot text-crimson-500"></i>
+                                        ${car.country || (isImport ? 'Alemania / UE' : 'España')}
+                                    </span>
+                                    <span class="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                        Revisado en Taller
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="p-6">
+                                <div class="text-xs font-mono uppercase tracking-widest text-crimson-400 mb-1">${car.brand}</div>
+                                <h3 class="font-display font-bold text-lg text-white group-hover:text-crimson-400 transition-colors line-clamp-1 mb-4">
+                                    ${car.title}
+                                </h3>
+
+                                <!-- Specs Pills -->
+                                <div class="grid grid-cols-3 gap-2 py-3 px-3 rounded-2xl bg-carbon-950/80 border border-white/5 mb-4 text-center font-mono">
+                                    <div>
+                                        <span class="text-[10px] text-gray-500 block">KILÓMETROS</span>
+                                        <span class="text-xs text-white font-semibold">${formatNumber(car.km)} km</span>
+                                    </div>
+                                    <div class="border-x border-white/10">
+                                        <span class="text-[10px] text-gray-500 block">POTENCIA</span>
+                                        <span class="text-xs text-white font-semibold">${car.hp} CV</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] text-gray-500 block">MOTOR</span>
+                                        <span class="text-xs text-white font-semibold truncate px-1 block">${car.fuel}</span>
+                                    </div>
+                                </div>
+
+                                <p class="text-xs text-gray-400 line-clamp-2 leading-relaxed">
+                                    ${car.description}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer: Price & CTA -->
+                        <div class="px-6 pb-6 pt-3 border-t border-white/5 flex items-center justify-between">
+                            <div>
+                                <span class="font-display font-extrabold text-2xl text-white block leading-none">${formatCurrency(car.price)}</span>
+                                <span class="font-mono text-[10px] text-gray-400 mt-1 block">Desde ~${monthlyEst} €/mes</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                ${isAdminAuthenticated ? `
+                                    <button onclick="event.stopPropagation(); openAdminDashboardAndEdit('${car.id}')" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-amber-500 hover:text-carbon-950 text-gray-300 flex items-center justify-center transition-colors" title="Editar anuncio">
+                                        <i class="fa-solid fa-pen text-xs"></i>
+                                    </button>
+                                ` : ''}
+                                <span class="px-4 py-2.5 rounded-xl bg-white/5 group-hover:bg-crimson-500 text-white text-xs font-semibold transition-colors flex items-center gap-1.5">
+                                    <span>Ficha</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+
+            // Animate cards smoothly on filter update
+            gsap.fromTo('.catalog-card', 
+                { y: 25, opacity: 0 },
+                { y: 0, opacity: 1, duration: 0.45, stagger: 0.06, ease: 'power2.out' }
+            );
+        }
+
+        /* ==========================================================================
+           6. VEHICLE DETAIL MODAL & FINANCING CALCULATOR
+           ========================================================================== */
+        function openVehicleDetailModal(carId) {
+            const car = vehicles.find(c => c.id === carId);
+            if (!car) return;
+            activeDetailCar = car;
+
+            const modal = document.getElementById('vehicleDetailModal');
+            const container = document.getElementById('vehicleDetailContent');
+            const defaultDownPayment = Math.round(car.price * 0.2);
+
+            container.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-12">
+                    <!-- Left Image & Technical Highlights -->
+                    <div class="lg:col-span-7 bg-carbon-950 flex flex-col justify-between">
+                        <div class="relative aspect-[16/10] w-full overflow-hidden">
+                            <img src="${car.image}" alt="${car.title}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-carbon-950 via-transparent to-transparent"></div>
+                            <div class="absolute top-4 left-4 flex gap-2">
+                                <span class="px-3.5 py-1.5 rounded-full text-xs font-mono uppercase bg-crimson-500 text-white font-semibold">
+                                    ${car.origin}
+                                </span>
+                                <span class="px-3.5 py-1.5 rounded-full text-xs font-mono bg-carbon-950/85 text-gray-200 border border-white/10">
+                                    Ref: ${car.id.toUpperCase()}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="p-6 sm:p-8 space-y-6">
+                            <div>
+                                <span class="font-mono text-xs uppercase tracking-widest text-crimson-500">${car.brand} · ${car.country || car.origin}</span>
+                                <h2 class="font-display font-extrabold text-2xl sm:text-3xl text-white mt-1">${car.title}</h2>
+                            </div>
+
+                            <!-- 6 Spec Boxes -->
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 font-mono">
+                                <div class="p-3.5 rounded-2xl bg-carbon-900 border border-white/5">
+                                    <span class="text-[10px] text-gray-500 block">AÑO MATRICULACIÓN</span>
+                                    <span class="text-sm font-bold text-white">${car.year}</span>
+                                </div>
+                                <div class="p-3.5 rounded-2xl bg-carbon-900 border border-white/5">
+                                    <span class="text-[10px] text-gray-500 block">KILOMETRAJE CERTIFICADO</span>
+                                    <span class="text-sm font-bold text-white">${formatNumber(car.km)} km</span>
+                                </div>
+                                <div class="p-3.5 rounded-2xl bg-carbon-900 border border-white/5">
+                                    <span class="text-[10px] text-gray-500 block">POTENCIA</span>
+                                    <span class="text-sm font-bold text-crimson-400">${car.hp} CV</span>
+                                </div>
+                                <div class="p-3.5 rounded-2xl bg-carbon-900 border border-white/5">
+                                    <span class="text-[10px] text-gray-500 block">COMBUSTIBLE</span>
+                                    <span class="text-sm font-bold text-white">${car.fuel}</span>
+                                </div>
+                                <div class="p-3.5 rounded-2xl bg-carbon-900 border border-white/5">
+                                    <span class="text-[10px] text-gray-500 block">TRANSMISIÓN</span>
+                                    <span class="text-sm font-bold text-white">${car.transmission || 'Automático'}</span>
+                                </div>
+                                <div class="p-3.5 rounded-2xl bg-carbon-900 border border-white/5">
+                                    <span class="text-[10px] text-gray-500 block">GARANTÍA TALLER</span>
+                                    <span class="text-sm font-bold text-emerald-400">12 / 24 Meses</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-mono text-xs uppercase tracking-wider text-gray-400 mb-2">Informe e Historial Stefy Cris</h4>
+                                <p class="text-gray-300 text-sm leading-relaxed">${car.description}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Price, Financing Calculator & Direct Booking -->
+                    <div class="lg:col-span-5 p-6 sm:p-8 bg-carbon-900/90 border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col justify-between space-y-6">
+                        <div class="space-y-6">
+                            <div class="pb-5 border-b border-white/10">
+                                <span class="font-mono text-xs uppercase text-gray-400 block">Precio al Contado (Impuestos Incluidos)</span>
+                                <div class="font-display font-extrabold text-4xl text-white mt-1">${formatCurrency(car.price)}</div>
+                                <span class="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-mono mt-2">
+                                    <i class="fa-solid fa-circle-check"></i> Revisión pre-entrega en Taller Stefy Cris incluida
+                                </span>
+                            </div>
+
+                            <!-- Interactive Financing Calculator -->
+                            <div class="p-5 rounded-2xl bg-carbon-950 border border-white/10 space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-mono text-xs uppercase tracking-wider text-white"><i class="fa-solid fa-calculator text-crimson-500 mr-1.5"></i>Simulador Financiación</span>
+                                    <span class="font-mono text-[11px] text-gray-400">TIN 5,99%</span>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1.5">
+                                        <span class="text-gray-400">Entrada inicial:</span>
+                                        <span id="calcDownLabel" class="font-mono font-bold text-white">${formatCurrency(defaultDownPayment)}</span>
+                                    </div>
+                                    <input type="range" id="calcDownInput" min="0" max="${Math.round(car.price * 0.7)}" step="1000" value="${defaultDownPayment}" oninput="updateFinanceCalc()" class="w-full">
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1.5">
+                                        <span class="text-gray-400">Plazo en meses:</span>
+                                        <span id="calcMonthsLabel" class="font-mono font-bold text-white">60 meses</span>
+                                    </div>
+                                    <input type="range" id="calcMonthsInput" min="24" max="96" step="12" value="60" oninput="updateFinanceCalc()" class="w-full">
+                                </div>
+
+                                <div class="pt-3 border-t border-white/10 flex items-center justify-between">
+                                    <span class="text-xs text-gray-400">Cuota mensual estimada:</span>
+                                    <span id="calcMonthlyResult" class="font-display font-extrabold text-2xl text-crimson-400">-- €/mes</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 pt-4">
+                            <button onclick="closeVehicleDetailModal(); openBookingModal('Reserva de Vehículo en Stock', '${car.brand} ${car.title}')" class="w-full py-4 rounded-xl bg-crimson-500 hover:bg-crimson-600 text-white font-semibold text-sm shadow-lg shadow-crimson-500/25 transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-calendar-check"></i>
+                                <span>Solicitar Prueba o Reservar Unidad</span>
+                            </button>
+                            <button onclick="closeVehicleDetailModal(); openBookingModal('Cita de Taller', 'Inspección Pre-Compra: ${car.brand} ${car.title}')" class="w-full py-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-200 font-semibold text-xs uppercase tracking-wider transition-all">
+                                Ver en Elevador con Mecánico Stefy Cris
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            updateFinanceCalc();
+        }
+
+        function updateFinanceCalc() {
+            if (!activeDetailCar) return;
+            const down = Number(document.getElementById('calcDownInput')?.value || 0);
+            const months = Number(document.getElementById('calcMonthsInput')?.value || 60);
+
+            document.getElementById('calcDownLabel').textContent = formatCurrency(down);
+            document.getElementById('calcMonthsLabel').textContent = `${months} meses`;
+
+            const principal = Math.max(0, activeDetailCar.price - down);
+            const monthlyRate = 0.0599 / 12;
+            const monthlyPayment = principal > 0
+                ? (principal * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -months))
+                : 0;
+
+            document.getElementById('calcMonthlyResult').textContent = `${Math.round(monthlyPayment)} €/mes`;
+        }
+
+        function closeVehicleDetailModal() {
+            const modal = document.getElementById('vehicleDetailModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        /* ==========================================================================
+           7. ADMIN AUTHENTICATION & CRUD DASHBOARD
+           ========================================================================== */
+        function handleAdminAccessClick() {
+            if (isAdminAuthenticated) {
+                openAdminDashboard();
+            } else {
+                openLoginModal();
+            }
+        }
+
+        function openLoginModal() {
+            document.getElementById('loginErrorMsg').classList.add('hidden');
+            const modal = document.getElementById('loginModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeLoginModal() {
+            const modal = document.getElementById('loginModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function fillDemoCredentials() {
+            document.getElementById('adminUsername').value = 'admin';
+            document.getElementById('adminPassword').value = 'stefycris2026';
+            document.getElementById('loginErrorMsg').classList.add('hidden');
+        }
+
+        function submitAdminLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('adminUsername').value.trim();
+            const pass = document.getElementById('adminPassword').value.trim();
+
+            if (user === 'admin' && pass === 'stefycris2026') {
+                isAdminAuthenticated = true;
+                try {
+                    localStorage.setItem(STORAGE_KEY_ADMIN, 'true');
+                } catch (err) {}
+                updateAdminUIState();
+                renderCatalog();
+                closeLoginModal();
+                openAdminDashboard();
+                showToast('Bienvenido al Panel de Administración de Stefy Cris', 'success');
+            } else {
+                document.getElementById('loginErrorMsg').classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminAuthenticated = false;
+            try {
+                localStorage.removeItem(STORAGE_KEY_ADMIN);
+            } catch (err) {}
+            updateAdminUIState();
+            renderCatalog();
+            closeAdminDashboard();
+            showToast('Sesión de administrador cerrada correctamente.', 'info');
+        }
+
+        function openAdminDashboard() {
+            renderAdminInventoryList();
+            const modal = document.getElementById('adminDashboardModal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeAdminDashboard() {
+            const modal = document.getElementById('adminDashboardModal');
+            modal.classList.add('hidden');
+        }
+
+        function openAdminDashboardAndEdit(carId) {
+            openAdminDashboard();
+            startEditVehicle(carId);
+        }
+
+        // Handle local image upload via FileReader
+        function handleLocalImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                uploadedImageDataUrl = e.target.result;
+                document.getElementById('carImageUrl').value = '';
+                updateAdminImagePreview(uploadedImageDataUrl);
+                showToast('Fotografía cargada desde tu dispositivo', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setPresetImage(url) {
+            uploadedImageDataUrl = '';
+            document.getElementById('carImageUrl').value = url;
+            updateAdminImagePreview(url);
+        }
+
+        function updateAdminImagePreview(src) {
+            const wrap = document.getElementById('adminImgPreviewWrap');
+            const img = document.getElementById('adminImgPreview');
+            if (src && src.trim().length > 5) {
+                img.src = src;
+                wrap.classList.remove('hidden');
+            } else {
+                wrap.classList.add('hidden');
+            }
+        }
+
+        function handleSaveVehicle(event) {
+            event.preventDefault();
+            if (!isAdminAuthenticated) {
+                showToast('Acceso denegado. Inicia sesión como administrador.', 'warning');
+                return;
+            }
+
+            const editId = document.getElementById('carIdInput').value;
+            const brand = document.getElementById('carBrand').value.trim();
+            const title = document.getElementById('carTitle').value.trim();
+            const origin = document.getElementById('carOrigin').value;
+            const country = document.getElementById('carCountry').value.trim() || (origin === 'Importación' ? 'Alemania, UE' : 'España');
+            const price = Number(document.getElementById('carPrice').value);
+            const year = Number(document.getElementById('carYear').value);
+            const km = Number(document.getElementById('carKm').value);
+            const hp = Number(document.getElementById('carHp').value);
+            const fuel = document.getElementById('carFuel').value;
+            const description = document.getElementById('carDescription').value.trim();
+
+            const urlInput = document.getElementById('carImageUrl').value.trim();
+            const finalImage = uploadedImageDataUrl || urlInput || 'https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?auto=format&fit=crop&w=1000&q=80';
+
+            if (editId) {
+                // Update existing listing
+                const idx = vehicles.findIndex(c => c.id === editId);
+                if (idx !== -1) {
+                    vehicles[idx] = {
+                        ...vehicles[idx],
+                        brand,
+                        title,
+                        origin,
+                        country,
+                        price,
+                        year,
+                        km,
+                        hp,
+                        fuel,
+                        image: finalImage,
+                        description
+                    };
+                    showToast(`Anuncio actualizado: ${brand} ${title}`, 'success');
+                }
+            } else {
+                // Create new listing
+                const newCar = {
+                    id: 'sc-' + Date.now().toString().slice(-4),
+                    brand,
+                    title,
+                    origin,
+                    country,
+                    price,
+                    year,
+                    km,
+                    hp,
+                    fuel,
+                    transmission: 'Automático',
+                    image: finalImage,
+                    description
+                };
+                vehicles.unshift(newCar);
+                showToast(`Nuevo vehículo publicado: ${brand} ${title}`, 'success');
+            }
+
+            saveVehiclesToStorage();
+            renderCatalog();
+            renderAdminInventoryList();
+            resetAdminForm();
+        }
+
+        function startEditVehicle(carId) {
+            const car = vehicles.find(c => c.id === carId);
+            if (!car) return;
+
+            document.getElementById('carIdInput').value = car.id;
+            document.getElementById('carBrand').value = car.brand;
+            document.getElementById('carTitle').value = car.title;
+            document.getElementById('carOrigin').value = car.origin;
+            document.getElementById('carCountry').value = car.country || '';
+            document.getElementById('carPrice').value = car.price;
+            document.getElementById('carYear').value = car.year;
+            document.getElementById('carKm').value = car.km;
+            document.getElementById('carHp').value = car.hp;
+            document.getElementById('carFuel').value = car.fuel;
+            document.getElementById('carDescription').value = car.description;
+
+            uploadedImageDataUrl = '';
+            document.getElementById('carImageUrl').value = car.image.startsWith('data:') ? '' : car.image;
+            updateAdminImagePreview(car.image);
+
+            document.getElementById('adminFormTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-amber-400"></i><span>Editando: ${car.brand} ${car.title}</span>`;
+            document.getElementById('adminSubmitBtn').innerHTML = `<i class="fa-solid fa-floppy-disk"></i><span>Guardar Cambios del Anuncio</span>`;
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+        }
+
+        function deleteVehicle(carId) {
+            const car = vehicles.find(c => c.id === carId);
+            if (!car) return;
+            vehicles = vehicles.filter(c => c.id !== carId);
+            saveVehiclesToStorage();
+            renderCatalog();
+            renderAdminInventoryList();
+            showToast(`Vehículo eliminado: ${car.brand} ${car.title}`, 'info');
+        }
+
+        function resetAdminForm() {
+            document.getElementById('vehicleAdminForm').reset();
+            document.getElementById('carIdInput').value = '';
+            uploadedImageDataUrl = '';
+            document.getElementById('adminImgPreviewWrap').classList.add('hidden');
+            document.getElementById('adminFormTitle').innerHTML = `<i class="fa-solid fa-plus-circle text-crimson-500"></i><span>Publicar Nuevo Vehículo</span>`;
+            document.getElementById('adminSubmitBtn').innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i><span>Guardar y Publicar en el Catálogo</span>`;
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+        }
+
+        function resetDefaultCatalog() {
+            vehicles = [...DEFAULT_VEHICLES];
+            saveVehiclesToStorage();
+            renderCatalog();
+            renderAdminInventoryList();
+            resetAdminForm();
+            showToast('Catálogo restaurado con los 6 vehículos originales', 'success');
+        }
+
+        function renderAdminInventoryList() {
+            const listEl = document.getElementById('adminInventoryList');
+            const totalEl = document.getElementById('adminTotalCount');
+            if (!listEl) return;
+
+            totalEl.textContent = `${vehicles.length} vehículos`;
+
+            listEl.innerHTML = vehicles.map(car => `
+                <div class="p-3.5 rounded-2xl bg-carbon-900 border border-white/10 flex items-center justify-between gap-3 hover:border-white/20 transition-colors">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <img src="${car.image}" alt="${car.title}" class="w-16 h-12 rounded-xl object-cover flex-shrink-0 bg-carbon-950" onerror="this.src='https://placehold.co/200x150/0a0c10/e11d48?text=SC'">
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <span class="text-[10px] font-mono px-2 py-0.5 rounded ${car.origin === 'Importación' ? 'bg-blue-500/20 text-blue-300' : 'bg-amber-500/20 text-amber-300'}">${car.origin}</span>
+                                <span class="text-xs font-mono text-gray-400">${car.year} · ${car.hp} CV</span>
+                            </div>
+                            <h5 class="font-display font-bold text-sm text-white truncate mt-0.5">${car.brand} ${car.title}</h5>
+                            <span class="font-mono text-xs text-crimson-400 font-semibold">${formatCurrency(car.price)}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 flex-shrink-0">
+                        <button onclick="startEditVehicle('${car.id}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-amber-500 hover:text-carbon-950 text-gray-300 flex items-center justify-center transition-colors" title="Editar">
+                            <i class="fa-solid fa-pen text-xs"></i>
+                        </button>
+                        <button onclick="deleteVehicle('${car.id}')" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-crimson-500 text-gray-300 hover:text-white flex items-center justify-center transition-colors" title="Eliminar">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* ==========================================================================
+           8. WORKSHOP & IMPORT BOOKING MODAL + UI HELPERS
+           ========================================================================== */
+        function openBookingModal(serviceType, prefillCar = '') {
+            const modal = document.getElementById('bookingModal');
+            const select = document.getElementById('bookService');
+            const carInput = document.getElementById('bookCarModel');
+
+            if (select && serviceType) {
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value === serviceType) {
+                        select.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            if (carInput) {
+                carInput.value = prefillCar;
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeBookingModal() {
+            const modal = document.getElementById('bookingModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function submitBookingForm(e) {
+            e.preventDefault();
+            const name = document.getElementById('bookName').value.trim();
+            const service = document.getElementById('bookService').value;
+            closeBookingModal();
+            e.target.reset();
+            showToast(`¡Gracias ${name}! Tu solicitud de "${service}" ha sido registrada en Stefy Cris.`, 'success');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('mobileMenuIcon');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                icon.className = 'fa-solid fa-xmark';
+            } else {
+                menu.classList.add('hidden');
+                icon.className = 'fa-solid fa-bars';
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            const iconMap = {
+                success: 'fa-circle-check text-emerald-400',
+                info: 'fa-circle-info text-blue-400',
+                warning: 'fa-triangle-exclamation text-amber-400'
+            };
+
+            toast.className = 'pointer-events-auto glass-panel rounded-2xl p-4 border border-white/15 shadow-2xl flex items-center gap-3 text-xs sm:text-sm text-white transform translate-y-4 opacity-0 transition-all duration-300';
+            toast.innerHTML = `
+                <i class="fa-solid ${iconMap[type] || iconMap.success} text-lg"></i>
+                <span class="flex-1 leading-snug">${message}</span>
+            `;
+
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-4', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-4', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
